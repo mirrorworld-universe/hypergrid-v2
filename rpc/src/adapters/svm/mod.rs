@@ -2,5 +2,7 @@
 //!
 //! SVM API implementation of `DietRPC`
 //! and `DietRpcPubSub` Interfaces
-pub mod bridge;
-pub mod bridge_pubsub;
+// Solana HTTP Methods
+pub mod http;
+// Solana Websocket Methods
+pub mod ws;
