@@ -6,3 +6,8 @@ edition = "2021"
 [dependencies]
 jsonrpsee = { workspace = true }
 solana-rpc-client-api = { workspace = true }
+
+[features]
+default = ["svm"]
+svm = []
+tpu = []
