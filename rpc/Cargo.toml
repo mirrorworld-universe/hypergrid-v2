@@ -8,6 +8,6 @@ jsonrpsee = { workspace = true }
 solana-rpc-client-api = { workspace = true }
 
 [features]
-default = ["svm"]
+default = []
 svm = []
 tpu = []

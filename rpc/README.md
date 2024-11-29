@@ -4,5 +4,8 @@ A lightweight RPC implementation meant to empower decentralized participation in
 
 ## Features
 
-- SVM API Bridge (Default)
-- TPU Bridge (Work-in-Progress, `--features tpu`)
+> [!IMPORTANT]
+> No default features
+
+- SVM API Bridge (`--features svm`)
+- TPU Bridge (`--features tpu`)
