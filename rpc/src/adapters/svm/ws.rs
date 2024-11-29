@@ -1,6 +1,6 @@
 use crate::rpc_ws::DietRpcPubSubServer;
 
-use jsonrpsee::core::SubscriptionResult;
+use jsonrpsee::{core::SubscriptionResult, PendingSubscriptionSink};
 
 /// SVM Diet RPC PubSub
 ///
@@ -12,7 +12,7 @@ pub struct SvmDietRpcPubSub;
 
 #[jsonrpsee::core::async_trait]
 impl DietRpcPubSubServer for SvmDietRpcPubSub {
-    async fn slot_subscribe(&self) -> SubscriptionResult {
+    async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
         Ok(())
     }
 }
