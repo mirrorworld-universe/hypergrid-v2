@@ -1,0 +1,9 @@
+[package]
+name = "rpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+jsonrpsee = { workspace = true }
+solana-rpc-client-api = "2.1.4"
+solana-rpc-client-api = { workspace = true }

@@ -1,0 +1,29 @@
+[workspace]
+
+members = [
+	"cache",
+	"cli",
+	"core",
+	"rpc",
+	"storage",
+	"svm"
+]
+
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+authors = ["Sonic Engineering <engineering@sonic.game>"]
+repository = "https://github.com/mirrorworld-universe/grid-v2"
+homepage = "https://www.sonic.game/"
+license = "Apache-2.0"
+edition = "2021"
+
+[workspace.dependencies]
+anyhow = "1.0.93"
+clap = "4.5.21"
+jsonrpsee = { version = "0.24.7", features = ["full"] }
+thiserror = "2.0.3"
+
+solana-rpc-client-api = "2.1.4"
+solana-svm = "2.1.4"
