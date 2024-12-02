@@ -5,6 +5,9 @@ edition = "2021"
 
 [dependencies]
 jsonrpsee = { workspace = true }
+solana-account-decoder = { workspace = true}
 solana-rpc-client-api = { workspace = true }
+solana-sdk = { workspace = true }
+solana-transaction-status = { workspace = true }
 
 [features]

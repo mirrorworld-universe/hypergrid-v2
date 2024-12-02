@@ -25,5 +25,8 @@ clap = "4.5.21"
 jsonrpsee = { version = "0.24.7", features = ["full"] }
 thiserror = "2.0.3"
 
+solana-account-decoder = "2.1.4"
 solana-rpc-client-api = "2.1.4"
+solana-sdk = "2.1.4"
 solana-svm = "2.1.4"
+solana-transaction-status = "2.1.4"
