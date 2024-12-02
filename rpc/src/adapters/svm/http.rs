@@ -14,6 +14,10 @@ pub struct SvmDietRpc;
 
 #[jsonrpsee::core::async_trait]
 impl DietRpcServer for SvmDietRpc {
+    // --------------------------
+    // Send / Simulate
+    // --------------------------
+
     async fn send_transaction(
         &self,
         transaction: String,
