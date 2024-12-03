@@ -24,7 +24,7 @@ impl AccountMigrator {
     }
 }
 
-impl TransactionProcessingCallback] for AccountMigrator {
+impl TransactionProcessingCallback for AccountMigrator {
     fn get_account_shared_data(&self, pubkey: &Pubkey) -> Option<AccountSharedData> {
         None
     }
