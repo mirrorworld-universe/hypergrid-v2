@@ -1,5 +1,5 @@
 [package]
-name = "grid-cache"
+name = "grid-p2p"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }

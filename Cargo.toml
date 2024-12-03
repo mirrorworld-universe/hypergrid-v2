@@ -2,8 +2,9 @@
 
 members = [
 	"cache",
-	"cli",
 	"core",
+	"node",
+	"p2p",
 	"rpc",
 	"storage",
 	"svm"
@@ -37,8 +38,9 @@ solana-system-program = "2.1.4"
 solana-transaction-status = "2.1.4"
 
 grid-cache = { version = "=0.1.0", path = "cache" }
-grid-cli = { version = "=0.1.0", path = "cli" }
 grid-core = { version = "=0.1.0", path = "core" }
+grid-node = { version = "=0.1.0", path = "node" }
+grid-p2p = { version = "=0.1.0", path = "p2p" }
 grid-rpc = { version = "=0.1.0", path = "rpc" }
 grid-storage = { version = "=0.1.0", path = "storage" }
 grid-svm = { version = "=0.1.0", path = "svm" }
