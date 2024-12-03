@@ -29,7 +29,7 @@ Contains Hypergrid Framework specific constructs and interactions
 - Hyperfuse Touchpoint
 
 ### `grid-p2p`
-Contains peering mech
+Contains peering mechanism for network state reconciliation
 - LibP2P
 - DHTs
 - Routing Tables
