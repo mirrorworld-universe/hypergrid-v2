@@ -4,4 +4,4 @@
  * 2. Define Processing Environment
  * 3. (Optional) Configure Processor */
 
-pub trait GridRuntimeInterface {}
+pub struct GridRuntime {}
