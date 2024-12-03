@@ -1,4 +1,4 @@
-use crate::rpc_http::DietRpcServer;
+use crate::rpc_http::RPCInterfaceServer;
 
 use jsonrpsee::core::RpcResult;
 
@@ -10,10 +10,10 @@ use solana_rpc_client_api::config::{RpcSendTransactionConfig, RpcSimulateTransac
 ///
 /// Methods
 /// -
-pub struct SvmDietRpc;
+pub struct GridRpc;
 
 #[jsonrpsee::core::async_trait]
-impl DietRpcServer for SvmDietRpc {
+impl RPCInterfaceServer for GridRpc {
     // --------------------------
     // Send / Simulate
     // --------------------------

@@ -1,4 +1,4 @@
-use crate::rpc_ws::DietRpcPubSubServer;
+use crate::rpc_ws::RpcPubSubInterfaceServer;
 
 use jsonrpsee::{core::SubscriptionResult, PendingSubscriptionSink};
 
@@ -8,10 +8,10 @@ use jsonrpsee::{core::SubscriptionResult, PendingSubscriptionSink};
 ///
 /// Methods
 /// -
-pub struct SvmDietRpcPubSub;
+pub struct GridRpcPubSub;
 
 #[jsonrpsee::core::async_trait]
-impl DietRpcPubSubServer for SvmDietRpcPubSub {
+impl RpcPubSubInterfaceServer for GridRpcPubSub {
     async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
         Ok(())
     }
