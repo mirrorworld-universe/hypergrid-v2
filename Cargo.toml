@@ -26,7 +26,11 @@ jsonrpsee = { version = "0.24.7", features = ["full"] }
 thiserror = "2.0.3"
 
 solana-account-decoder = "2.1.4"
+solana-bpf-loader-program = "2.1.4"
+solana-compute-budget = "2.1.4"
+solana-program-runtime = "2.1.4"
 solana-rpc-client-api = "2.1.4"
 solana-sdk = "2.1.4"
 solana-svm = "2.1.4"
+solana-system-program = "2.1.4"
 solana-transaction-status = "2.1.4"
