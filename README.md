@@ -6,13 +6,15 @@ See [Reference Doc](https://docs.google.com/document/d/1G9ZxCjbIDAw0pImqVdXrJ4-t
 
 ## Workspace
 
-	"cache",
-	"core",
-	"node",
-	"p2p",
-	"rpc",
-	"storage",
-	"svm"
+```
+"cache",
+"core",
+"node",
+"p2p",
+"rpc",
+"storage",
+"svm"
+```
 
 ### `grid-node`
 Combining all layers into a single CLI executable node
