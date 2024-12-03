@@ -1,3 +1,5 @@
+mod node;
+
 use anyhow::Result;
 use clap::{Arg, ArgAction, Command};
 
