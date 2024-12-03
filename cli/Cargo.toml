@@ -7,3 +7,4 @@ edition = { workspace = true }
 anyhow = { workspace = true }
 clap = { workspace = true }
 grid-rpc = { workspace = true }
+grid-svm = { workspace = true }
