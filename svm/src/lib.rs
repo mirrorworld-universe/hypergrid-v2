@@ -4,6 +4,7 @@ use solana_sdk::{
     pubkey::Pubkey,
 };
 use solana_svm::transaction_processing_callback::TransactionProcessingCallback;
+use std::collections::HashMap;
 
 /*
  * Steps to have a working Runtime SVM
@@ -16,6 +17,10 @@ pub struct RuntimeConfig {}
 
 // TransactionProcessingConfig
 pub struct ProcessorConfig {}
+
+// --------------------------
+// AccountMigrator / Loader
+// --------------------------
 
 pub struct AccountMigrator {
     rpc_client: RpcClient,
@@ -52,3 +57,17 @@ impl TransactionProcessingCallback for AccountMigrator {
             .and_then(|account| owners.iter().position(|key| account.owner().eq(key)))
     }
 }
+
+// --------------------------
+// Transaction Processing
+// --------------------------
+
+// pub struct Bank {
+//     accounts: HashMap,
+// }
+//
+// pub struct Ledger {
+//     transactions: HashMap<u128, GridTransaction>,
+// }
+//
+// pub struct Processor {}
