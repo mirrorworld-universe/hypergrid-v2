@@ -1,5 +1,5 @@
 [package]
-name = "grid-cache"
+name = "grid-node"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -9,3 +9,7 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+grid-rpc = { workspace = true }
+grid-svm = { workspace = true }

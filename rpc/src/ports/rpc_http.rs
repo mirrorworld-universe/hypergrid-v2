@@ -28,7 +28,7 @@ use std::collections::HashMap;
 /// Methods
 /// -
 #[rpc(server)]
-pub trait DietRpc {
+pub trait RPCInterface {
     // --------------------------
     // Send / Simulate
     // --------------------------
