@@ -4,7 +4,6 @@ use solana_sdk::{
     pubkey::Pubkey,
 };
 use solana_svm::transaction_processing_callback::TransactionProcessingCallback;
-use std::collections::HashMap;
 
 pub struct GridLoader {
     rpc_client: RpcClient,
