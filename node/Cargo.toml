@@ -15,6 +15,8 @@ path = "src/main.rs"
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
+grid-core = { workspace = true }
 grid-rpc = { workspace = true }
 grid-storage = { workspace = true }
 grid-svm = { workspace = true }
+tokio = { workspace = true }

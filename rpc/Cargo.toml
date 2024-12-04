@@ -9,6 +9,7 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
+grid-core = { workspace = true }
 jsonrpsee = { workspace = true }
 solana-account-decoder = { workspace = true}
 solana-rpc-client-api = { workspace = true }

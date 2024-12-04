@@ -1,9 +1,12 @@
 mod cli;
+mod config;
+mod gateway;
 mod node;
 
 use anyhow::Result;
 use clap::{ArgMatches, Command};
 use cli::CliHandler;
+use node::GridNode;
 
 fn main() -> Result<()> {
     let toplevel_matches = Command::new("grid")

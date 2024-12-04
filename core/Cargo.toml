@@ -9,3 +9,5 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
+async-trait = { workspace = true }
+anyhow = { workspace = true }

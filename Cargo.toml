@@ -22,9 +22,11 @@ edition = "2021"
 
 [workspace.dependencies]
 anyhow = "1.0.93"
+async-trait = "0.1.83"
 clap = "4.5.21"
 jsonrpsee = { version = "0.24.7", features = ["full"] }
 thiserror = "2.0.3"
+tokio = { version = "1.42.0", features = ["rt", "rt-multi-thread"] }
 
 solana-account-decoder = "2.1.4"
 solana-bpf-loader-program = "2.1.4"

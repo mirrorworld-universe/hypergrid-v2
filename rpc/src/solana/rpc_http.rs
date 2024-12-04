@@ -21,14 +21,8 @@ use solana_sdk::slot_history::Slot;
 use solana_transaction_status::{TransactionStatus, UiConfirmedBlock};
 use std::collections::HashMap;
 
-/// Diet RPC
-///
-/// HTTP Interface for Grid RPC
-///
-/// Methods
-/// -
 #[rpc(server)]
-pub trait RPCInterface {
+pub trait SolanaRpc {
     // --------------------------
     // Send / Simulate
     // --------------------------
