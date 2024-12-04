@@ -8,8 +8,13 @@ homepage = { workspace = true }
 license = { workspace = true }
 edition = { workspace = true }
 
+[[bin]]
+name = "grid"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
 grid-rpc = { workspace = true }
+grid-storage = { workspace = true }
 grid-svm = { workspace = true }
