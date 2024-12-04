@@ -7,7 +7,7 @@ use jsonrpsee::{core::SubscriptionResult, proc_macros::rpc};
 /// Methods
 /// -
 #[rpc(server)]
-pub trait DietRpcPubSub {
+pub trait RpcPubSubInterface {
     #[subscription(name = "slotSubscribe" => "slotNotification", unsubscribe="slotUnsubscribe", item=String)]
     async fn slot_subscribe(&self) -> SubscriptionResult;
 
