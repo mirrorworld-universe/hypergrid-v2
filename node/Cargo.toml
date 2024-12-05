@@ -16,9 +16,9 @@ path = "src/main.rs"
 anyhow = { workspace = true }
 clap = { workspace = true }
 grid-core = { workspace = true }
+grid-mock-storage = { workspace = true }
 grid-solana-rpc = { workspace = true }
 grid-solana-svm = { workspace = true }
-grid-storage = { workspace = true }
 jsonrpsee = { workspace = true }
 solana-account-decoder = { workspace = true}
 solana-rpc-client-api = { workspace = true }
