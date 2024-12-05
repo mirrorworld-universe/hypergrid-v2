@@ -65,7 +65,7 @@ impl SolanaRpcServer for GridNode {
         transaction: String,
         config: Option<RpcSendTransactionConfig>,
     ) -> RpcResult<String> {
-        Ok(String::from(""))
+        Ok(String::from("hotdog"))
     }
 
     async fn simulate_transaction(

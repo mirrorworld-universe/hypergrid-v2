@@ -1,0 +1,14 @@
+[package]
+name = "grid-cli"
+description = ""
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+anstyle = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
