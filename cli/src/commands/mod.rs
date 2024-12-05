@@ -15,7 +15,7 @@ const STYLES: Styles = Styles::plain()
     .literal(Style::new().bold());
 
 #[derive(Debug, Parser)]
-#[clap(name = "grid", author = "Sonic Engineering <engineering@sonic.game>", styles = STYLES)]
+#[clap(version, about, author, styles = STYLES)]
 pub struct Cli {
     /// Verbosity level [options: 0, 1, 2, 3]
     #[clap(default_value = "2", short, long)]

@@ -1,18 +1,22 @@
 use anyhow::Result;
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 
-use std::net::SocketAddr;
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+pub enum Network {
+    Solana,
+    Mock,
+}
 
 #[derive(Clone, Debug, Parser)]
 pub struct Start {
-    /// Specify the IP address and port for the node server
-    #[clap(long = "node")]
-    pub node: Option<SocketAddr>,
+    #[clap(long = "network")]
+    pub network: Network,
 }
 
 impl Start {
     /// Starts the Grid node
     pub fn parse(self) -> Result<String> {
+        println!("{:?}", self.network);
         Ok(String::new())
     }
 }
