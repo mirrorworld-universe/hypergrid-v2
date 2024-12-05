@@ -6,7 +6,8 @@ members = [
 	"core",
 	"mock-storage",
 	"node",
-	"p2p", "solana",
+	"p2p",
+	"solana",
 	"solana-rpc",
 	"solana-svm",
 ]
