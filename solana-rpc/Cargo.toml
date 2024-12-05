@@ -1,5 +1,5 @@
 [package]
-name = "grid-rpc"
+name = "grid-solana-rpc"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }

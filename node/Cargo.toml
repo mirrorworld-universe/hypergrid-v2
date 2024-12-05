@@ -16,8 +16,14 @@ path = "src/main.rs"
 anyhow = { workspace = true }
 clap = { workspace = true }
 grid-core = { workspace = true }
-grid-rpc = { workspace = true }
+grid-solana-rpc = { workspace = true }
+grid-solana-svm = { workspace = true }
 grid-storage = { workspace = true }
-grid-svm = { workspace = true }
+jsonrpsee = { workspace = true }
+solana-account-decoder = { workspace = true}
 solana-rpc-client-api = { workspace = true }
+solana-sdk = { workspace = true }
+solana-transaction-status = { workspace = true }
 tokio = { workspace = true }
+
+[features]

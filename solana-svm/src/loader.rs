@@ -5,17 +5,17 @@ use solana_sdk::{
 };
 use solana_svm::transaction_processing_callback::TransactionProcessingCallback;
 
-pub struct GridLoader {
+pub struct SvmLoader {
     rpc_client: RpcClient,
 }
 
-impl GridLoader {
+impl SvmLoader {
     pub fn new(rpc_client: RpcClient) -> Self {
         Self { rpc_client }
     }
 }
 
-impl TransactionProcessingCallback for GridLoader {
+impl TransactionProcessingCallback for SvmLoader {
     /// Get Account from L1
     ///
     /// Hoists L1 accounts into the SVM API representation of an

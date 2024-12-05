@@ -1,5 +1,4 @@
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
-
 use solana_account_decoder::UiAccount;
 use solana_rpc_client_api::{
     config::{
@@ -14,10 +13,9 @@ use solana_rpc_client_api::{
         RpcPrioritizationFee, RpcVoteAccountStatus,
     },
 };
-use solana_sdk::commitment_config::CommitmentConfig;
-use solana_sdk::epoch_info::EpochInfo;
-use solana_sdk::pubkey::Pubkey;
-use solana_sdk::slot_history::Slot;
+use solana_sdk::{
+    commitment_config::CommitmentConfig, epoch_info::EpochInfo, pubkey::Pubkey, slot_history::Slot,
+};
 use solana_transaction_status::{TransactionStatus, UiConfirmedBlock};
 use std::collections::HashMap;
 

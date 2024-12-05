@@ -1,6 +1,5 @@
 mod cli;
 mod config;
-mod gateway;
 mod node;
 
 use anyhow::Result;
@@ -32,6 +31,7 @@ pub struct StartHandler;
 
 impl CliHandler for StartHandler {
     fn handle_matches(matches: &ArgMatches) -> Result<()> {
+        println!("Start Command");
         Ok(())
     }
 }

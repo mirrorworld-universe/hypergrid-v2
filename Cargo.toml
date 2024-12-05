@@ -5,9 +5,9 @@ members = [
 	"core",
 	"node",
 	"p2p",
-	"rpc",
+	"solana-rpc",
+	"solana-svm",
 	"storage",
-	"svm"
 ]
 
 resolver = "2"
@@ -43,6 +43,6 @@ grid-cache = { version = "=0.1.0", path = "cache" }
 grid-core = { version = "=0.1.0", path = "core" }
 grid-node = { version = "=0.1.0", path = "node" }
 grid-p2p = { version = "=0.1.0", path = "p2p" }
-grid-rpc = { version = "=0.1.0", path = "rpc" }
+grid-solana-rpc = { version = "=0.1.0", path = "solana-rpc" }
 grid-storage = { version = "=0.1.0", path = "storage" }
-grid-svm = { version = "=0.1.0", path = "svm" }
+grid-solana-svm = { version = "=0.1.0", path = "solana-svm" }

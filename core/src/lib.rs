@@ -11,20 +11,7 @@ use async_trait::async_trait;
  */
 
 #[async_trait]
-pub trait GridRuntime: Send + Sync + 'static {
-    // from GridLoader
-    fn fetch_account();
-    fn settle_account();
-    // from GridProcessor
-    fn process_transaction();
-    fn process_transaction_batch();
-}
-
-#[async_trait]
-pub trait GridGateway: Send + Sync + 'static {
-    async fn start_http_server(&self) -> Result<()>;
-    async fn start_ws_server(&self) -> Result<()>;
-}
+pub trait GridRuntime: Send + Sync + 'static {}
 
 #[async_trait]
 pub trait GridStorage: Send + Sync + 'static {}

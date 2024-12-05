@@ -1,5 +1,5 @@
 [package]
-name = "grid-svm"
+name = "grid-solana-svm"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -9,6 +9,7 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
+grid-core = { workspace = true }
 solana-bpf-loader-program = { workspace = true }
 solana-client = { workspace = true }
 solana-compute-budget = { workspace = true }
