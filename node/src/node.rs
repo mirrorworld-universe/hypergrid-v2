@@ -40,7 +40,7 @@ impl GridNode {
         }
     }
 
-    async fn start(&self) -> Result<()> {
+    pub async fn start(&self) -> Result<()> {
         println!("Starting Grid...");
 
         tokio::select! {

@@ -15,6 +15,7 @@ path = "src/main.rs"
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
+async-trait = { workspace = true }
 grid-core = { workspace = true }
 grid-mock-storage = { workspace = true }
 grid-solana-rpc = { workspace = true }

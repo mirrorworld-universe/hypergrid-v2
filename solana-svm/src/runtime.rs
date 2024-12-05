@@ -8,4 +8,10 @@ use grid_core::GridRuntime;
 
 pub struct SvmRuntime {}
 
+impl SvmRuntime {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
 impl GridRuntime for SvmRuntime {}
