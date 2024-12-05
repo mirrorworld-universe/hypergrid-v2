@@ -28,9 +28,3 @@ pub trait GridGateway: Send + Sync + 'static {
 
 #[async_trait]
 pub trait GridStorage: Send + Sync + 'static {}
-
-pub struct SvmGateway {
-    rpc: SolanaJsonRpcServer<SvmRuntime>,
-}
-
-impl GridGateway for SvmGateway {}
