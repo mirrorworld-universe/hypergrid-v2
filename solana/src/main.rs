@@ -15,5 +15,6 @@ fn main() -> anyhow::Result<()> {
             exit(1);
         }
     }
+
     Ok(())
 }
