@@ -6,10 +6,10 @@ members = [
 	"core",
 	"mock-storage",
 	"node",
+	"node/solana",
+	"node/solana/rpc",
+	"node/solana/svm",
 	"p2p",
-	"solana",
-	"solana-rpc",
-	"solana-svm",
 ]
 
 resolver = "2"
@@ -47,7 +47,7 @@ grid-cache = { version = "=0.1.0", path = "cache" }
 grid-core = { version = "=0.1.0", path = "core" }
 grid-mock-storage = { version = "=0.1.0", path = "mock-storage" }
 grid-node = { version = "=0.1.0", path = "node" }
+grid-node-solana = { version = "=0.1.0", path = "node/solana" }
+grid-node-solana-rpc = { version = "=0.1.0", path = "node/solana/rpc" }
+grid-node-solana-svm = { version = "=0.1.0", path = "node/solana/svm" }
 grid-p2p = { version = "=0.1.0", path = "p2p" }
-grid-solana = { version = "=0.1.0", path = "solana" }
-grid-solana-rpc = { version = "=0.1.0", path = "solana-rpc" }
-grid-solana-svm = { version = "=0.1.0", path = "solana-svm" }

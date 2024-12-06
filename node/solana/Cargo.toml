@@ -1,5 +1,5 @@
 [package]
-name = "grid-solana"
+name = "grid-node-solana"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }

@@ -13,8 +13,8 @@ anyhow = { workspace = true }
 async-trait = { workspace = true }
 grid-core = { workspace = true }
 grid-mock-storage = { workspace = true }
-grid-solana-rpc = { workspace = true }
-grid-solana-svm = { workspace = true }
+grid-node-solana-rpc = { workspace = true }
+grid-node-solana-svm = { workspace = true }
 jsonrpsee = { workspace = true }
 solana-account-decoder = { workspace = true}
 solana-rpc-client-api = { workspace = true }
