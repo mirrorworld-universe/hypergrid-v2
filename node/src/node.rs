@@ -1,85 +1,60 @@
 use anyhow::Result;
-use grid_core::{GridRuntime, GridStorage};
-use grid_solana_rpc::{rpc_http::SolanaRpcServer, rpc_pubsub::SolanaRpcPubSubServer};
-use jsonrpsee::{
-    core::{RpcResult, SubscriptionResult},
-    proc_macros::rpc,
-    PendingSubscriptionSink,
-};
-use solana_account_decoder::UiAccount;
-use solana_rpc_client_api::{
-    config::{
-        RpcAccountInfoConfig, RpcBlocksConfigWrapper, RpcContextConfig, RpcEncodingConfigWrapper,
-        RpcGetVoteAccountsConfig, RpcLeaderScheduleConfig, RpcProgramAccountsConfig,
-        RpcSendTransactionConfig, RpcSignatureStatusConfig, RpcSignaturesForAddressConfig,
-        RpcSimulateTransactionConfig,
-    },
-    response::{
-        OptionalContext, Response as RpcResponse, RpcBlockhash,
-        RpcConfirmedTransactionStatusWithSignature, RpcContactInfo, RpcKeyedAccount, RpcPerfSample,
-        RpcPrioritizationFee, RpcVoteAccountStatus,
-    },
-};
-use solana_sdk::{
-    commitment_config::CommitmentConfig, epoch_info::EpochInfo, pubkey::Pubkey, slot_history::Slot,
-};
-use solana_transaction_status::{TransactionStatus, UiConfirmedBlock};
-use std::collections::HashMap;
-use tokio::signal;
+use std::marker::PhantomData;
+use std::sync::Arc;
 
-pub struct GridNode {
-    runtime: Box<dyn GridRuntime>,
-    storage: Box<dyn GridStorage>,
+pub trait Network {
+    fn get_network_id() -> String;
 }
 
-impl GridNode {
-    pub fn new(runtime: impl GridRuntime, storage: impl GridStorage) -> Self {
-        Self {
-            runtime: Box::new(runtime),
-            storage: Box::new(storage),
-        }
-    }
+pub trait AccountStorage {
+    const NAME: &'static str;
+    fn store_account() -> Result<()>;
+}
 
-    pub async fn start(&self) -> Result<()> {
-        println!("Starting Grid...");
+pub trait LedgerStorage {
+    const NAME: &'static str;
+    fn store_bucket() -> Result<()>;
+}
 
-        tokio::select! {
-            _ = signal::ctrl_c() => {
-                println!("Received SIGINT");
-                println!("Shutting down Grid...");
-            }
-        }
+pub struct KVStore {}
 
+impl AccountStorage for KVStore {
+    const NAME: &'static str = "KVStore";
+
+    fn store_account() -> Result<()> {
         Ok(())
     }
 }
 
-#[jsonrpsee::core::async_trait]
-impl SolanaRpcServer for GridNode {
-    // --------------------------
-    // Send / Simulate
-    // --------------------------
+impl LedgerStorage for KVStore {
+    const NAME: &'static str = "KVStore";
 
-    async fn send_transaction(
-        &self,
-        transaction: String,
-        config: Option<RpcSendTransactionConfig>,
-    ) -> RpcResult<String> {
-        Ok(String::from("hotdog"))
-    }
-
-    async fn simulate_transaction(
-        &self,
-        transaction: String,
-        config: Option<RpcSimulateTransactionConfig>,
-    ) -> RpcResult<String> {
-        Ok(String::from(""))
+    fn store_bucket() -> Result<()> {
+        Ok(())
     }
 }
 
-#[jsonrpsee::core::async_trait]
-impl SolanaRpcPubSubServer for GridNode {
-    async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
+pub struct GridStorage<N: Network, A: AccountStorage, L: LedgerStorage> {
+    _account: PhantomData<A>,
+    _ledger: PhantomData<L>,
+}
+
+impl<A: AccountStorage, L: LedgerStorage> GridStorage<A, L> {
+    fn store() -> Result<()> {
+        L::store_bucket()?;
+        A::store_account()?;
         Ok(())
     }
+}
+
+pub struct Grid<N: Network, A: AccountStorage, L: LedgerStorage> {
+    storage: GridStorage<N, A, L>,
+    _phantom: PhantomData<N>,
+}
+
+pub enum Node<N: Network> {
+    /// A Grid is a full node with an rpc, processor and storage
+    Grid(Arc<Grid<N, KVStore, KVStore>>),
+    /// A Storage is a node with read rpc gateway and storage
+    Storage(Arc<GridStorage<N, KVStore, KVStore>>),
 }
