@@ -1,5 +1,5 @@
-mod start;
-pub use start::*;
+mod node;
+pub use node::*;
 
 use anstyle::{AnsiColor, Color, Style};
 use anyhow::Result;
@@ -27,15 +27,15 @@ pub struct Cli {
 
 #[derive(Debug, Parser)]
 pub enum Command {
-    #[clap(name = "start")]
-    Start(Start),
+    #[clap(name = "node")]
+    Node(Node),
 }
 
 impl Command {
     /// Parses the command
     pub fn parse(self) -> Result<String> {
         match self {
-            Self::Start(command) => command.parse(),
+            Self::Node(command) => command.parse(),
         }
     }
 }

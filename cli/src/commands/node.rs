@@ -8,12 +8,12 @@ pub enum Network {
 }
 
 #[derive(Clone, Debug, Parser)]
-pub struct Start {
+pub struct Node {
     #[clap(long = "network")]
     pub network: Network,
 }
 
-impl Start {
+impl Node {
     /// Starts the Grid node
     pub fn parse(self) -> Result<String> {
         println!("{:?}", self.network);
