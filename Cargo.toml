@@ -3,9 +3,10 @@
 members = [
 	"cache",
 	"cli",
-	"core",
-	"mock-storage",
 	"node",
+	"node/core",
+	"node/router",
+	"node/runtime",
 	"node/solana",
 	"node/solana/rpc",
 	"node/solana/svm",
@@ -44,9 +45,10 @@ solana-transaction-status = "2.1.4"
 
 grid-cli = { version = "=0.1.0", path = "cli" }
 grid-cache = { version = "=0.1.0", path = "cache" }
-grid-core = { version = "=0.1.0", path = "core" }
-grid-mock-storage = { version = "=0.1.0", path = "mock-storage" }
 grid-node = { version = "=0.1.0", path = "node" }
+grid-node-core = { version = "=0.1.0", path = "node/core" }
+grid-node-router = { version = "=0.1.0", path = "node/router" }
+grid-node-runtime = { version = "=0.1.0", path = "node/runtime" }
 grid-node-solana = { version = "=0.1.0", path = "node/solana" }
 grid-node-solana-rpc = { version = "=0.1.0", path = "node/solana/rpc" }
 grid-node-solana-svm = { version = "=0.1.0", path = "node/solana/svm" }

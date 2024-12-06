@@ -1,5 +1,3 @@
-use grid_core::GridRuntime;
-
 /*
  * Steps to have a working Runtime SVM
  * 1. Define Processing Callback
@@ -13,5 +11,3 @@ impl SvmRuntime {
         Self {}
     }
 }
-
-impl GridRuntime for SvmRuntime {}

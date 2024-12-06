@@ -9,7 +9,6 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-grid-core = { workspace = true }
 solana-bpf-loader-program = { workspace = true }
 solana-client = { workspace = true }
 solana-compute-budget = { workspace = true }

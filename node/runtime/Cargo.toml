@@ -1,5 +1,5 @@
 [package]
-name = "grid-core"
+name = "grid-node-runtime"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -9,5 +9,4 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-async-trait = { workspace = true }
-anyhow = { workspace = true }
+grid-node-core = { workspace = true }

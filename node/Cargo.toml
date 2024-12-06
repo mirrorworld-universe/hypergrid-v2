@@ -11,15 +11,11 @@ edition = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 async-trait = { workspace = true }
-grid-core = { workspace = true }
-grid-mock-storage = { workspace = true }
+grid-node-core = { workspace = true }
+grid-node-router = { workspace = true }
+grid-node-runtime = { workspace = true }
 grid-node-solana-rpc = { workspace = true }
 grid-node-solana-svm = { workspace = true }
-jsonrpsee = { workspace = true }
-solana-account-decoder = { workspace = true}
-solana-rpc-client-api = { workspace = true }
-solana-sdk = { workspace = true }
-solana-transaction-status = { workspace = true }
 tokio = { workspace = true }
 
 [features]

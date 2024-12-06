@@ -1,5 +1,5 @@
 [package]
-name = "grid-mock-storage"
+name = "grid-node-router"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -9,4 +9,5 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-grid-core.workspace = true
+grid-node-core = { workspace = true }
+grid-node-solana-rpc = { workspace = true }
