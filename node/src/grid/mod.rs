@@ -4,11 +4,15 @@ use crate::{NodeInterface, NodeType};
 use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::Network;
-use grid_node_router::{InboundRpcHttp, Routing};
+use grid_node_router::{InboundRpcHttp, InboundRpcPubSub, Routing};
 use grid_node_runtime::Runtime;
 use grid_node_solana_rpc::{
-    jsonrpsee::core::RpcResult,
+    jsonrpsee::{
+        core::{RpcResult, SubscriptionResult},
+        PendingSubscriptionSink,
+    },
     rpc_http::SolanaRpcServer,
+    rpc_pubsub::SolanaRpcPubSubServer,
     solana_rpc_client_api::config::{RpcSendTransactionConfig, RpcSimulateTransactionConfig},
 };
 use runtime::GridRuntime;
@@ -40,6 +44,7 @@ impl<N: Network> Grid<N> {
 // Routing
 impl<N: Network> Routing<N> for Grid<N> {
     fn enable_listeners(&self) {
+        self.enable_rpc_pubsub();
         self.enable_rpc_http();
     }
 }
@@ -66,6 +71,16 @@ impl<N: Network> SolanaRpcServer for Grid<N> {
     ) -> RpcResult<String> {
         self.runtime.process_transaction();
         Ok(String::new())
+    }
+}
+
+// InboundRpcPubSub
+impl<N: Network> InboundRpcPubSub for Grid<N> {}
+
+#[async_trait]
+impl<N: Network> SolanaRpcPubSubServer for Grid<N> {
+    async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
+        Ok(())
     }
 }
 
