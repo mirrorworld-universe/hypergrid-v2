@@ -1,0 +1,18 @@
+[package]
+name = "grid-node-solana-svm"
+description = ""
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+solana-bpf-loader-program = { workspace = true }
+solana-client = { workspace = true }
+solana-compute-budget = { workspace = true }
+solana-program-runtime = { workspace = true }
+solana-sdk = { workspace = true }
+solana-svm = { workspace = true }
+solana-system-program = { workspace = true }
