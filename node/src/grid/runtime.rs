@@ -6,6 +6,7 @@ use std::marker::PhantomData;
 // Runtime
 //------------------------------------------
 
+#[derive(Copy, Clone, Debug)]
 pub struct GridRuntime<N: Network> {
     _network: PhantomData<N>,
 }
