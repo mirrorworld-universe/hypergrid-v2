@@ -21,6 +21,13 @@ use runtime::GridRuntime;
 // Grid
 //------------------------------------------
 
+/// Grid.
+///
+/// A specific type of Node.
+///
+/// The main Node implementation critical to
+/// bootstrapping the network.
+///
 #[derive(Copy, Clone, Debug)]
 pub struct Grid<N: Network> {
     node_type: NodeType,

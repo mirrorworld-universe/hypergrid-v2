@@ -6,6 +6,12 @@ use std::marker::PhantomData;
 // Runtime
 //------------------------------------------
 
+/// GridRuntime.
+///
+/// A specific Runtime implementation.
+///
+/// This one utilizes the SVM API.
+///
 #[derive(Copy, Clone, Debug)]
 pub struct GridRuntime<N: Network> {
     _network: PhantomData<N>,
