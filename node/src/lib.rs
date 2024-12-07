@@ -26,7 +26,7 @@ pub enum NodeType {
 }
 
 #[async_trait]
-pub trait NodeInterface<N: Network>: Routing<N> {
+pub trait NodeScaffolding<N: Network>: Routing<N> {
     fn node_type(&self) -> NodeType;
     async fn shutdown(&self);
 }
