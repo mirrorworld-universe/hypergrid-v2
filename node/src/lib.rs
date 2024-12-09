@@ -41,6 +41,28 @@ pub enum NodeType {
 ///
 #[async_trait]
 pub trait NodeScaffolding<N: Network>: Routing<N> {
+    //------------------------------------------
+    // Associated Functions
+    //------------------------------------------
+
+    /// Prepares Node before running.
+    fn prepare(&self);
+    /// Gracefully shuts down Node and its running services.
+    fn shutdown(&self);
+
+    //------------------------------------------
+    // Asynchronous Associated Functions
+    //------------------------------------------
+
+    /// Spawns Node services.
+    async fn spawn(&self);
+    /// Runs Node and initial services.
+    async fn run(&self);
+
+    //------------------------------------------
+    // Getters
+    //------------------------------------------
+
+    /// Get Node type
     fn node_type(&self) -> NodeType;
-    async fn shutdown(&self);
 }
