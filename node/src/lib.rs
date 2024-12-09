@@ -4,6 +4,7 @@ use crate::grid::Grid;
 use async_trait::async_trait;
 use grid_node_core::Network;
 use grid_node_router::Routing;
+use std::future::Future;
 
 //------------------------------------------
 // Node
@@ -49,13 +50,16 @@ pub trait NodeScaffolding<N: Network>: Routing<N> {
     fn prepare(&self);
     /// Gracefully shuts down Node and its running services.
     fn shutdown(&self);
+    /// Spawns a task with the given future.
+    ///
+    /// Used specifically for spawning long-running tasks.
+    ///
+    fn spawn<T: Future<Output = ()> + Send + 'static>(&self, future: T);
 
     //------------------------------------------
     // Asynchronous Associated Functions
     //------------------------------------------
 
-    /// Spawns Node services.
-    async fn spawn(&self);
     /// Runs Node and initial services.
     async fn run(&self);
 
@@ -63,6 +67,6 @@ pub trait NodeScaffolding<N: Network>: Routing<N> {
     // Getters
     //------------------------------------------
 
-    /// Get Node type
+    /// Get Node type.
     fn node_type(&self) -> NodeType;
 }

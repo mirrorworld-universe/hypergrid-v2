@@ -93,11 +93,27 @@ impl<N: Network> SolanaRpcPubSubServer for Grid<N> {
 
 #[async_trait]
 impl<N: Network> NodeScaffolding<N> for Grid<N> {
+    //------------------------------------------
+    // Associated Functions
+    //------------------------------------------
+
+    fn prepare(&self) {}
+
+    fn shutdown(&self) {}
+
+    fn spawn<T: Future<Output = ()> + Send + 'static>(&self, future: T) {}
+
+    //------------------------------------------
+    // Asynchronous Associated Functions
+    //------------------------------------------
+
+    async fn run(&self) {}
+
+    //------------------------------------------
+    // Getters
+    //------------------------------------------
+
     fn node_type(&self) -> NodeType {
         self.node_type
-    }
-
-    async fn shutdown(&self) {
-        println!("Shutting down")
     }
 }
