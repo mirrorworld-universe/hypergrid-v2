@@ -37,6 +37,7 @@ pub enum NodeType {
 /// - Task Scheduling
 /// - Graceful Teardown
 /// - Shutdown
+/// - Node Getters
 ///
 #[async_trait]
 pub trait NodeScaffolding<N: Network>: Routing<N> {
