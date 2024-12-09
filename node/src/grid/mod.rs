@@ -16,6 +16,10 @@ use grid_node_solana_rpc::{
     solana_rpc_client_api::config::{RpcSendTransactionConfig, RpcSimulateTransactionConfig},
 };
 use runtime::GridRuntime;
+use std::{
+    future::Future,
+    net::{IpAddr, SocketAddr},
+};
 
 //------------------------------------------
 // Grid
@@ -31,12 +35,23 @@ use runtime::GridRuntime;
 #[derive(Copy, Clone, Debug)]
 pub struct Grid<N: Network> {
     node_type: NodeType,
+    node_ip: IpAddr,
+    rpc_port: u16,
+    rpc_pubsub_port: u16,
     runtime: GridRuntime<N>,
 }
 
 impl<N: Network> Grid<N> {
-    pub fn new(node_type: NodeType) -> Result<Self> {
+    pub fn new(
+        node_ip: IpAddr,
+        rpc_port: u16,
+        rpc_pubsub_port: u16,
+        node_type: NodeType,
+    ) -> Result<Self> {
         Ok(Self {
+            node_ip,
+            rpc_port,
+            rpc_pubsub_port,
             node_type,
             // TODO: Configure GridRuntime;
             runtime: GridRuntime::<N>::new(),
@@ -45,19 +60,72 @@ impl<N: Network> Grid<N> {
 }
 
 //------------------------------------------
+// NodeBase
+//------------------------------------------
+
+#[async_trait]
+impl<N: Network> NodeScaffolding<N> for Grid<N> {
+    //------------------------------------------
+    // Associated Functions
+    //------------------------------------------
+
+    fn prepare(&self) {}
+
+    fn shutdown(&self) {}
+
+    fn spawn<T: Future<Output = ()> + Send + 'static>(&self, future: T) {}
+
+    //------------------------------------------
+    // Asynchronous Associated Functions
+    //------------------------------------------
+
+    /// Runs Node and initial services.
+    async fn run(&self) -> Result<()> {
+        println!("running");
+        self.enable_listeners().await?;
+        println!("after running");
+        Ok(())
+    }
+
+    //------------------------------------------
+    // Getters
+    //------------------------------------------
+
+    /// Get Node type.
+    fn node_type(&self) -> NodeType {
+        self.node_type
+    }
+}
+
+//------------------------------------------
 // Routing
 //------------------------------------------
 
 // Routing
+#[async_trait]
 impl<N: Network> Routing<N> for Grid<N> {
-    fn enable_listeners(&self) {
-        self.enable_rpc_pubsub();
-        self.enable_rpc_http();
+    /// Enable all Routing listeners
+    async fn enable_listeners(&self) -> Result<()> {
+        self.enable_listener().await?;
+        Ok(())
+    }
+
+    fn ip(&self) -> IpAddr {
+        self.node_ip
     }
 }
 
 // InboundRpcHttp
-impl<N: Network> InboundRpcHttp for Grid<N> {}
+#[async_trait]
+impl<N: Network> InboundRpcHttp for Grid<N> {
+    fn rpc_url(&self) -> SocketAddr {
+        SocketAddr::new(self.ip(), self.port())
+    }
+
+    fn port(&self) -> u16 {
+        self.rpc_port
+    }
+}
 
 // SolanaRpcServer
 #[async_trait]
@@ -81,39 +149,13 @@ impl<N: Network> SolanaRpcServer for Grid<N> {
     }
 }
 
-// InboundRpcPubSub
-impl<N: Network> InboundRpcPubSub for Grid<N> {}
-
-#[async_trait]
-impl<N: Network> SolanaRpcPubSubServer for Grid<N> {
-    async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
-        Ok(())
-    }
-}
-
-#[async_trait]
-impl<N: Network> NodeScaffolding<N> for Grid<N> {
-    //------------------------------------------
-    // Associated Functions
-    //------------------------------------------
-
-    fn prepare(&self) {}
-
-    fn shutdown(&self) {}
-
-    fn spawn<T: Future<Output = ()> + Send + 'static>(&self, future: T) {}
-
-    //------------------------------------------
-    // Asynchronous Associated Functions
-    //------------------------------------------
-
-    async fn run(&self) {}
-
-    //------------------------------------------
-    // Getters
-    //------------------------------------------
-
-    fn node_type(&self) -> NodeType {
-        self.node_type
-    }
-}
+// // InboundRpcPubSub
+// impl<N: Network> InboundRpcPubSub for Grid<N> {}
+//
+// // SolanaRpcPubSubServer
+// #[async_trait]
+// impl<N: Network> SolanaRpcPubSubServer for Grid<N> {
+//     async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
+//         Ok(())
+//     }
+// }

@@ -1,10 +1,11 @@
 pub mod grid;
 
 use crate::grid::Grid;
+use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::Network;
 use grid_node_router::Routing;
-use std::future::Future;
+use std::{future::Future, net::IpAddr, sync::Arc};
 
 //------------------------------------------
 // Node
@@ -15,13 +16,23 @@ use std::future::Future;
 /// Lists the available Node types.
 ///
 pub enum Node<N: Network> {
-    Grid(Grid<N>),
+    /// Grid Node Type
+    ///
+    /// Mainly responsible for sequencing incoming
+    /// transactions
+    ///
+    Grid(Arc<Grid<N>>),
 }
 
 impl<N: Network> Node<N> {
     pub fn new_grid() -> Self {
+        let node_ip: IpAddr = "127.0.0.1".parse().unwrap();
         let node_type = NodeType::Grid;
-        Self::Grid(Grid::new(node_type).unwrap())
+        let rpc_port = 8080;
+        let rpc_pubsub_port = 8081;
+        Self::Grid(Arc::new(
+            Grid::new(node_ip, rpc_port, rpc_pubsub_port, node_type).unwrap(),
+        ))
     }
 }
 
@@ -40,6 +51,9 @@ pub enum NodeType {
 /// - Shutdown
 /// - Node Getters
 ///
+/// Import Note:
+/// A Node is expected to have Routing, because what is a node
+/// without routing?
 #[async_trait]
 pub trait NodeScaffolding<N: Network>: Routing<N> {
     //------------------------------------------
@@ -61,7 +75,7 @@ pub trait NodeScaffolding<N: Network>: Routing<N> {
     //------------------------------------------
 
     /// Runs Node and initial services.
-    async fn run(&self);
+    async fn run(&self) -> Result<()>;
 
     //------------------------------------------
     // Getters
