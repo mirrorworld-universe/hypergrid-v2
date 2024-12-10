@@ -10,6 +10,7 @@ members = [
 	"node/solana",
 	"node/solana/rpc",
 	"node/solana/svm",
+	"node/spawner",
 	"p2p",
 ]
 
@@ -52,4 +53,5 @@ grid-node-runtime = { version = "=0.1.0", path = "node/runtime" }
 grid-node-solana = { version = "=0.1.0", path = "node/solana" }
 grid-node-solana-rpc = { version = "=0.1.0", path = "node/solana/rpc" }
 grid-node-solana-svm = { version = "=0.1.0", path = "node/solana/svm" }
+grid-node-spawner = { version = "=0.1.0", path = "node/spawner" }
 grid-p2p = { version = "=0.1.0", path = "p2p" }
