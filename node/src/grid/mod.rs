@@ -73,8 +73,6 @@ impl<N: Network> NodeScaffolding<N> for Grid<N> {
 
     fn shutdown(&self) {}
 
-    fn spawn<T: Future<Output = ()> + Send + 'static>(&self, future: T) {}
-
     //------------------------------------------
     // Asynchronous Associated Functions
     //------------------------------------------
