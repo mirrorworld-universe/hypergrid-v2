@@ -1,5 +1,5 @@
 [package]
-name = "grid-cli"
+name = "grid-logger"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -9,12 +9,6 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
-anstyle = { workspace = true }
 anyhow = { workspace = true }
-clap = { workspace = true }
-grid-logger = { workspace = true }
-grid-node-core = { workspace = true }
-grid-node = { workspace = true }
-tokio = { workspace = true }
-
-[features]
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }

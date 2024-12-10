@@ -1,8 +1,9 @@
 use anyhow::Result;
 use clap::{Parser, ValueEnum};
+use grid_logger::{initialize_logger, tracing::*};
 use grid_node::{NodeScaffolding, NodeType};
 use grid_node_core::network::Solana;
-use std::net::{IpAddr, Ipv4Addr};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tokio::runtime::{self, Runtime};
 
 const DEFAULT_RPC_PORT: u16 = 1024;
@@ -26,6 +27,8 @@ pub type Port = u16;
 #[derive(Clone, Debug, Parser)]
 #[command(arg_required_else_help(true))]
 pub struct Node {
+    #[clap(short = 'v', long = "verbosity")]
+    pub verbosity: Option<u8>,
     #[clap(short = 'n', long = "network")]
     pub network: Option<NetworkArg>,
     #[clap(long = "node-ip")]
@@ -41,7 +44,15 @@ pub struct Node {
 impl Node {
     /// Starts the Grid node
     pub fn parse(self) -> Result<String> {
-        println!("Running Grid with {:?} Runtime", self.network);
+        let verbosity = match self.verbosity {
+            Some(v) => v,
+            None => 1,
+        };
+
+        // Initialize Grid Logger.
+        initialize_logger(verbosity)?;
+
+        info!("Starting Node");
 
         let node_ip: IpAddr = match self.node_ip {
             Some(ip) => ip,
@@ -66,8 +77,19 @@ impl Node {
             None => DEFAULT_RPC_PUBSUB_PORT,
         };
 
+        info!(
+            "Node RPC HTTP Gateway: {}",
+            SocketAddr::new(node_ip, rpc_port)
+        );
+        info!(
+            "Node RPC Websocket (PubSub) Gateway: {}",
+            SocketAddr::new(node_ip, rpc_pubsub_port)
+        );
+
         let node: grid_node::Node<Solana> =
             grid_node::Node::<Solana>::new_grid(node_ip, node_type, rpc_port, rpc_pubsub_port);
+
+        debug!("Node instance: {:?}", node);
 
         Self::runtime()?.block_on(async move {
             let grid_node::Node::Grid(grid) = node;

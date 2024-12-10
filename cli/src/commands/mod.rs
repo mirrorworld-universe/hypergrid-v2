@@ -6,7 +6,7 @@ use anyhow::Result;
 use clap::{builder::Styles, Parser};
 
 const PRIMARY_COLOR: Option<Color> = Some(Color::Ansi(AnsiColor::Blue));
-const SECONDARY_COLOR: Option<Color> = Some(Color::Ansi(AnsiColor::Cyan));
+// const SECONDARY_COLOR: Option<Color> = Some(Color::Ansi(AnsiColor::Cyan));
 const ERROR_COLOR: Option<Color> = Some(Color::Ansi(AnsiColor::Red));
 const STYLES: Styles = Styles::plain()
     .header(Style::new().bold().fg_color(PRIMARY_COLOR))
