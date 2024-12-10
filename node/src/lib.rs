@@ -25,11 +25,12 @@ pub enum Node<N: Network> {
 }
 
 impl<N: Network> Node<N> {
-    pub fn new_grid() -> Self {
-        let node_ip: IpAddr = "127.0.0.1".parse().unwrap();
-        let node_type = NodeType::Grid;
-        let rpc_port = 8080;
-        let rpc_pubsub_port = 8081;
+    pub fn new_grid(
+        node_ip: IpAddr,
+        node_type: NodeType,
+        rpc_port: u16,
+        rpc_pubsub_port: u16,
+    ) -> Self {
         Self::Grid(Arc::new(
             Grid::new(node_ip, rpc_port, rpc_pubsub_port, node_type).unwrap(),
         ))

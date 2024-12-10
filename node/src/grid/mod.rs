@@ -79,9 +79,7 @@ impl<N: Network> NodeScaffolding<N> for Grid<N> {
 
     /// Runs Node and initial services.
     async fn run(&self) -> Result<()> {
-        println!("running");
         self.enable_listeners().await?;
-        println!("after running");
         Ok(())
     }
 
@@ -134,6 +132,8 @@ impl<N: Network> SolanaRpcServer for Grid<N> {
         config: Option<RpcSendTransactionConfig>,
     ) -> RpcResult<String> {
         self.runtime.process_transaction();
+        println!("Transaction: {:?}", transaction);
+        println!("Config: {:?}", config);
         Ok(String::new())
     }
 
