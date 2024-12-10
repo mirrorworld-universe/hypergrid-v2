@@ -32,7 +32,7 @@ use std::{
 /// The main Node implementation critical to
 /// bootstrapping the network.
 ///
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Grid<N: Network> {
     node_type: NodeType,
     node_ip: IpAddr,

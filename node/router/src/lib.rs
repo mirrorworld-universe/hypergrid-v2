@@ -43,7 +43,7 @@ pub trait Routing<N: Network>: InboundRpcHttp {
 /// - [`SolanaRpcServer`] Solana HTTP RPC standard.
 ///
 #[async_trait]
-pub trait InboundRpcHttp: Copy + SolanaRpcServer {
+pub trait InboundRpcHttp: Clone + SolanaRpcServer {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------
@@ -52,7 +52,7 @@ pub trait InboundRpcHttp: Copy + SolanaRpcServer {
     async fn enable_listener(&self) -> Result<()> {
         // Handle error in Node level
         let server = ServerBuilder::default().build(self.rpc_url()).await?;
-        let server_handle = server.start(self.into_rpc());
+        let server_handle = server.start(self.clone().into_rpc());
         server_handle.stopped().await;
         Ok(())
     }
@@ -73,13 +73,13 @@ pub trait InboundRpcHttp: Copy + SolanaRpcServer {
 /// - [`SolanaRpcPubSubServer`] Solana Websocket (PubSub) RPC standard.
 ///
 #[async_trait]
-pub trait InboundRpcPubSub: Copy + SolanaRpcPubSubServer {
+pub trait InboundRpcPubSub: Clone + SolanaRpcPubSubServer {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------
 
     /// Enables PubSub RPC gateways.
     fn enable_listener(&self) {
-        let rpc = self.into_rpc();
+        let rpc = self.clone().into_rpc();
     }
 }
