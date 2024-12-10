@@ -64,11 +64,6 @@ pub trait NodeScaffolding<N: Network>: Routing<N> {
     fn prepare(&self);
     /// Gracefully shuts down Node and its running services.
     fn shutdown(&self);
-    /// Spawns a task with the given future.
-    ///
-    /// Used specifically for spawning long-running tasks.
-    ///
-    fn spawn<T: Future<Output = ()> + Send + 'static>(&self, future: T);
 
     //------------------------------------------
     // Asynchronous Associated Functions
