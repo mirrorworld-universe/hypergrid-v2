@@ -8,7 +8,7 @@ use tokio::runtime::{self, Runtime};
 const DEFAULT_RPC_PORT: u16 = 1024;
 const DEFAULT_RPC_PUBSUB_PORT: u16 = 1025;
 const DEFAULT_NODE_IP: IpAddr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
-const DEFAULT_NODE_NODE_TYPE: NodeType = NodeType::Grid;
+const DEFAULT_NODE_TYPE: NodeType = NodeType::Grid;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum NetworkArg {
@@ -48,7 +48,7 @@ impl Node {
             None => DEFAULT_NODE_IP,
         };
 
-        let mut node_type = NodeType::Grid;
+        let mut node_type = DEFAULT_NODE_TYPE;
 
         if let Some(node_type_arg) = self.node_type {
             node_type = match node_type_arg {
