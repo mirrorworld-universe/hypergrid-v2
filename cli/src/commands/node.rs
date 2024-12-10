@@ -77,15 +77,6 @@ impl Node {
             None => DEFAULT_RPC_PUBSUB_PORT,
         };
 
-        info!(
-            "Node RPC HTTP Gateway: {}",
-            SocketAddr::new(node_ip, rpc_port)
-        );
-        info!(
-            "Node RPC Websocket (PubSub) Gateway: {}",
-            SocketAddr::new(node_ip, rpc_pubsub_port)
-        );
-
         let node: grid_node::Node<Solana> =
             grid_node::Node::<Solana>::new_grid(node_ip, node_type, rpc_port, rpc_pubsub_port);
 
@@ -94,8 +85,17 @@ impl Node {
         Self::runtime()?.block_on(async move {
             let grid_node::Node::Grid(grid) = node;
 
+            info!("Running Node");
             tokio::spawn(async move { grid.run().await });
 
+            info!(
+                "Node RPC Gateway running: {}",
+                SocketAddr::new(node_ip, rpc_port)
+            );
+            info!(
+                "Node RPC (PubSub) running: {}",
+                SocketAddr::new(node_ip, rpc_pubsub_port)
+            );
             std::future::pending::<()>().await;
         });
 
