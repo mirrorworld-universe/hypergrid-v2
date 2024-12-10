@@ -1,6 +1,9 @@
 mod node;
 pub use node::*;
 
+mod tester;
+pub use tester::*;
+
 use anstyle::{AnsiColor, Color, Style};
 use anyhow::Result;
 use clap::{builder::Styles, Parser};
@@ -29,6 +32,8 @@ pub struct Cli {
 pub enum Command {
     #[clap(name = "node")]
     Node(Node),
+    #[clap(name = "tester")]
+    Tester(Tester),
 }
 
 impl Command {
@@ -36,6 +41,7 @@ impl Command {
     pub fn parse(self) -> Result<String> {
         match self {
             Self::Node(command) => command.parse(),
+            Self::Tester(command) => command.parse(),
         }
     }
 }
