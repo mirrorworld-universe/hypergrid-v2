@@ -10,7 +10,7 @@ pub trait Network: Copy + Clone + Send + Sync + 'static {
 pub mod network {
     use super::*;
 
-    #[derive(Copy, Clone)]
+    #[derive(Copy, Clone, Debug)]
     pub struct Solana;
     impl Network for Solana {
         const NAME: &'static str = "solana";

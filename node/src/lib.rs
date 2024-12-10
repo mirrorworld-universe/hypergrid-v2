@@ -15,6 +15,7 @@ use std::{future::Future, net::IpAddr, sync::Arc};
 ///
 /// Lists the available Node types.
 ///
+#[derive(Debug)]
 pub enum Node<N: Network> {
     /// Grid Node Type
     ///
