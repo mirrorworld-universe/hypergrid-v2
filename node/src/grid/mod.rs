@@ -1,4 +1,5 @@
 pub mod runtime;
+pub mod storage;
 
 use crate::{NodeScaffolding, NodeType};
 use anyhow::Result;
@@ -20,6 +21,7 @@ use std::{
     future::Future,
     net::{IpAddr, SocketAddr},
 };
+use storage::GridStorage;
 
 //------------------------------------------
 // Grid
@@ -39,6 +41,7 @@ pub struct Grid<N: Network> {
     rpc_port: u16,
     rpc_pubsub_port: u16,
     runtime: GridRuntime<N>,
+    storage: GridStorage<N>,
 }
 
 impl<N: Network> Grid<N> {
@@ -53,6 +56,8 @@ impl<N: Network> Grid<N> {
             rpc_port,
             rpc_pubsub_port,
             node_type,
+            // TODO: Configure GridStorage;
+            storage: GridStorage::<N>::new(),
             // TODO: Configure GridRuntime;
             runtime: GridRuntime::<N>::new(),
         })
