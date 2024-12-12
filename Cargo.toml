@@ -16,6 +16,10 @@ members = [
 	"p2p",
 ]
 
+exclude = [
+	"node/examples/sfn"
+]
+
 resolver = "2"
 
 [workspace.package]
