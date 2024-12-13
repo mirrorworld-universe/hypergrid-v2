@@ -3,9 +3,9 @@ pub mod grid;
 use crate::grid::Grid;
 use anyhow::Result;
 use async_trait::async_trait;
-use grid_node_core::Network;
+use grid_node_core::{Network, NodeType};
 use grid_node_router::Routing;
-use std::{future::Future, net::IpAddr, sync::Arc};
+use std::{net::IpAddr, sync::Arc};
 
 //------------------------------------------
 // Node
@@ -32,15 +32,8 @@ impl<N: Network> Node<N> {
         rpc_port: u16,
         rpc_pubsub_port: u16,
     ) -> Self {
-        Self::Grid(Arc::new(
-            Grid::new(node_ip, rpc_port, rpc_pubsub_port, node_type).unwrap(),
-        ))
+        Self::Grid(Arc::new(Grid::new(node_ip, node_type, rpc_port).unwrap()))
     }
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum NodeType {
-    Grid,
 }
 
 /// NodeScaffolding Trait.
@@ -57,7 +50,7 @@ pub enum NodeType {
 /// A Node is expected to have Routing, because what is a node
 /// without routing?
 #[async_trait]
-pub trait NodeScaffolding<N: Network>: Routing {
+pub trait NodeScaffolding<N: Network> {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------

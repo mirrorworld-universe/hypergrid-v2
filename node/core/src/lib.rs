@@ -16,3 +16,8 @@ pub mod network {
         const NAME: &'static str = "solana";
     }
 }
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum NodeType {
+    Grid,
+}

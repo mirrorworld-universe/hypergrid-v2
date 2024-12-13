@@ -1,6 +1,6 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use grid_node_core::Network;
+use grid_node_core::{Network, NodeType};
 use grid_node_solana_rpc::{
     jsonrpsee::{server::ServerBuilder, tokio::net::ToSocketAddrs},
     rpc_http::SolanaRpcServer,
@@ -31,7 +31,7 @@ pub trait Routing: InboundRpcHttp {
     //------------------------------------------
 
     /// Get base IP [`IpAddr`] of Routing
-    fn ip(&self) -> IpAddr;
+    fn node_type(&self) -> NodeType;
 }
 
 /// InboundRpcHttp Trait for Routing.
