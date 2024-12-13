@@ -1,4 +1,3 @@
-
 # grid-node
 
 [![Crates.io](https://img.shields.io/crates/v/grid-node.svg?color=0000FF)](https://crates.io/crates/grid-node)
