@@ -17,7 +17,7 @@ use std::net::{IpAddr, SocketAddr};
 /// but different ports.
 #[async_trait]
 // pub trait Routing<N: Network>: InboundRpcHttp + InboundRpcPubSub {
-pub trait Routing<N: Network>: InboundRpcHttp {
+pub trait Routing: InboundRpcHttp {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------

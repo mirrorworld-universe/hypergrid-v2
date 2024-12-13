@@ -104,7 +104,7 @@ impl<N: Network> NodeScaffolding<N> for Grid<N> {
 
 // Routing
 #[async_trait]
-impl<N: Network> Routing<N> for Grid<N> {
+impl<N: Network> Routing for Grid<N> {
     /// Enable all Routing listeners
     async fn enable_listeners(&self) -> Result<()> {
         self.enable_listener().await?;
