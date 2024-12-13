@@ -30,8 +30,10 @@ pub trait Routing: InboundRpcHttp {
     // Getters
     //------------------------------------------
 
-    /// Get base IP [`IpAddr`] of Routing
+    /// Get Node type
     fn node_type(&self) -> NodeType;
+    /// Get Node base IP
+    fn ip(&self) -> IpAddr;
 }
 
 /// InboundRpcHttp Trait for Routing.

@@ -90,6 +90,10 @@ impl<N: Network> Routing for GridRouter<N> {
         Ok(())
     }
 
+    fn ip(&self) -> IpAddr {
+        self.node_ip
+    }
+
     fn node_type(&self) -> NodeType {
         self.node_type
     }
