@@ -38,7 +38,7 @@ pub trait NodeScaffolding<N: Network>: Routing {
 
 #[async_trait]
 pub trait Routing: InboundRpcHttp {
-    /// Used for enabling routing protocols (e.g. TCP)
+    /// Used for enabling routing protocols. (e.g. TCP)
     async fn initialize_routers(&self) -> Result<()>;
 
     /// Used for enabling gateways / ingestion
@@ -46,10 +46,13 @@ pub trait Routing: InboundRpcHttp {
     async fn enable_listeners(&self) -> Result<()>;
 }
 
+/// Sequencing incoming transactions.
 pub trait Processing {}
 
+/// Caching account and archival retrievals.
 pub trait Caching {}
 
+/// Storing Blocks and Accounts.
 pub trait Storing {}
 
 //------------------------------------------

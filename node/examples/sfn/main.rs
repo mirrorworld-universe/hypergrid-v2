@@ -182,11 +182,9 @@ impl<N: Network> SFNRuntime<N> {
 //------------------------------------------
 
 #[derive(Clone)]
-pub struct SFNStorage<N: Network> {
-    _network: PhantomData<N>,
-}
+pub struct SFNStorage {}
 
-impl<N: Network> SFNStorage<N> {
+impl SFNStorage {
     pub fn new() -> Self {
         Self {
             _network: Default::default(),
@@ -194,4 +192,4 @@ impl<N: Network> SFNStorage<N> {
     }
 }
 
-impl<N: Network> Storage<N> for MockStorage {}
+impl Storing for SFNStorage {}
