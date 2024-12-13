@@ -1,46 +1,59 @@
+use anyhow::Result;
 use async_trait::async_trait;
 use grid_node::*;
 use grid_node_core::*;
 use grid_node_router::*;
 use grid_node_runtime::*;
-use grid_node_solana_rpc::*;
+use grid_node_solana_rpc::{
+    jsonrpsee::{
+        core::{RpcResult, SubscriptionResult},
+        PendingSubscriptionSink,
+    },
+    rpc_http::SolanaRpcServer,
+    rpc_pubsub::SolanaRpcPubSubServer,
+    solana_rpc_client_api::config::{RpcSendTransactionConfig, RpcSimulateTransactionConfig},
+};
 use grid_node_storage::*;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
-use std::sync::Arc;
+use std::{
+    marker::PhantomData,
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+    sync::Arc,
+};
 
 const DEFAULT_RPC_PORT: u16 = 1024;
 const DEFAULT_NODE_IP: IpAddr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
 const DEFAULT_NODE_TYPE: NodeType = NodeType::Grid;
 
 fn main() {
-    let grid = Grid::new(
+    let grid = SFN::<network::Solana>::new(
         DEFAULT_NODE_IP,
         DEFAULT_NODE_TYPE,
         DEFAULT_RPC_PORT,
-        GridRuntime::new(),
-        GridStorage::new(),
+        SFNRuntime::new(),
+        SFNStorage::new(),
     );
 }
 
 //------------------------------------------
-// Grid
+// Simple Full Node
 //------------------------------------------
 
-pub struct Grid {
+#[derive(Clone)]
+pub struct SFN<N: Network> {
     node_ip: IpAddr,
     node_type: NodeType,
     rpc_port: u16,
-    runtime: GridRuntime,
-    storage: GridStorage,
+    runtime: SFNRuntime<N>,
+    storage: SFNStorage<N>,
 }
 
-impl Grid {
+impl<N: Network> SFN<N> {
     pub fn new(
         node_ip: IpAddr,
-        rpc_port: u16,
         node_type: NodeType,
-        runtime: GridRuntime,
-        storage: GridStorage,
+        rpc_port: u16,
+        runtime: SFNRuntime<N>,
+        storage: SFNStorage<N>,
     ) -> Self {
         Self {
             node_ip,
@@ -53,7 +66,7 @@ impl Grid {
 }
 
 #[async_trait]
-impl<N: Network> NodeScaffolding<N> for Grid<N> {
+impl<N: Network> NodeScaffolding<N> for SFN<N> {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------
@@ -88,7 +101,7 @@ impl<N: Network> NodeScaffolding<N> for Grid<N> {
 
 // Routing
 #[async_trait]
-impl<N: Network> Routing<N> for Grid<N> {
+impl<N: Network> Routing<N> for SFN<N> {
     /// Enable all Routing listeners
     async fn enable_listeners(&self) -> Result<()> {
         self.enable_listener().await?;
@@ -102,7 +115,7 @@ impl<N: Network> Routing<N> for Grid<N> {
 
 // InboundRpcHttp
 #[async_trait]
-impl<N: Network> InboundRpcHttp for Grid<N> {
+impl<N: Network> InboundRpcHttp for SFN<N> {
     fn rpc_url(&self) -> SocketAddr {
         SocketAddr::new(self.ip(), self.port())
     }
@@ -114,13 +127,13 @@ impl<N: Network> InboundRpcHttp for Grid<N> {
 
 // SolanaRpcServer
 #[async_trait]
-impl<N: Network> rpc_http::SolanaRpcServer for Grid<N> {
+impl<N: Network> SolanaRpcServer for SFN<N> {
     async fn send_transaction(
         &self,
         transaction: String,
         config: Option<RpcSendTransactionConfig>,
     ) -> RpcResult<String> {
-        self.runtime.process_transaction();
+        // self.runtime.process_transaction();
         println!("Transaction: {:?}", transaction);
         println!("Config: {:?}", config);
         Ok(String::new())
@@ -131,43 +144,57 @@ impl<N: Network> rpc_http::SolanaRpcServer for Grid<N> {
         transaction: String,
         config: Option<RpcSimulateTransactionConfig>,
     ) -> RpcResult<String> {
-        self.runtime.process_transaction();
+        // self.runtime.process_transaction();
         Ok(String::new())
     }
 }
 
 //------------------------------------------
-// GridRouter
+// SFNRouter
 //------------------------------------------
 
-pub struct GridRouter {}
+// pub struct SFNRouter<N> {}
+//
+// impl<N: Network> SFNRouter<N> {
+//     pub fn new() -> Self {
+//         Self {}
+//     }
+// }
 
-impl GridRouter {
+//------------------------------------------
+// SFNRuntime
+//------------------------------------------
+
+#[derive(Clone)]
+pub struct SFNRuntime<N: Network> {
+    _network: PhantomData<N>,
+}
+
+impl<N: Network> SFNRuntime<N> {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            _network: Default::default(),
+        }
     }
 }
 
 //------------------------------------------
-// GridRuntime
+// SFNStorage
 //------------------------------------------
 
-pub struct GridRuntime {}
+#[derive(Clone)]
+pub struct SFNStorage<N: Network> {
+    _network: PhantomData<N>,
+}
 
-impl GridRuntime {
+impl<N: Network> SFNStorage<N> {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            _network: Default::default(),
+        }
     }
 }
 
-//------------------------------------------
-// GridStorage
-//------------------------------------------
+pub struct MockStorage {}
 
-pub struct GridStorage {}
-
-impl GridStorage {
-    pub fn new() -> Self {
-        Self {}
-    }
-}
+impl<N: Network> Storage<N> for MockStorage {}
