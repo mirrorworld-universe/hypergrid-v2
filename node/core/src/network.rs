@@ -11,5 +11,5 @@ impl Network for Solana {
 pub struct Canary {}
 
 impl Network for Canary {
-    const NAME: &'static str = "Canary";
+    const NAME: &'static str = "canary";
 }
