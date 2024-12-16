@@ -1,7 +1,6 @@
 [workspace]
 
 members = [
-	"cache",
 	"cli",
 	"logger",
 	"node",
@@ -14,7 +13,6 @@ members = [
 	"node/solana/svm",
 	"node/spawner",
 	"node/storage",
-	"p2p",
 ]
 
 exclude = [
@@ -54,7 +52,6 @@ solana-system-program = "2.1.4"
 solana-transaction-status = "2.1.4"
 
 grid-cli = { version = "=0.1.0", path = "cli" }
-grid-cache = { version = "=0.1.0", path = "cache" }
 grid-logger = { version = "=0.1.0", path = "logger" }
 grid-node = { version = "=0.1.0", path = "node" }
 grid-node-builder = { version = "=0.1.0", path = "node/builder" }
@@ -66,4 +63,3 @@ grid-node-solana-rpc = { version = "=0.1.0", path = "node/solana/rpc" }
 grid-node-solana-svm = { version = "=0.1.0", path = "node/solana/svm" }
 grid-node-storage = { version = "=0.1.0", path = "node/storage" }
 grid-node-spawner = { version = "=0.1.0", path = "node/spawner" }
-grid-p2p = { version = "=0.1.0", path = "p2p" }
