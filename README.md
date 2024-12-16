@@ -6,51 +6,13 @@ See [Reference Doc](https://docs.google.com/document/d/1G9ZxCjbIDAw0pImqVdXrJ4-t
 
 ## Workspace
 
-```
-"cache",
-"core",
-"node",
-"p2p",
-"rpc",
-"storage",
-"svm"
-```
-
-### `grid-node`
-Combining all layers into a single CLI executable node
-- CLI Runner
-- Configuration Builder
-- Central Hub 
-
-### `grid-cache`
-Contains caching mechanisms for grid storage
-
-### `grid-core`
-Contains Hypergrid Framework specific constructs and interactions
-- HSSN Touchpoint
-- Hyperfuse Touchpoint
-
-### `grid-p2p`
-Contains peering mechanism for network state reconciliation
-- LibP2P
-- DHTs
-- Routing Tables
-- State Reconciliation
-- State Streaming
-
-### `grid-rpc`
-Contains main ingress gateway for grid node
-- HTTP JSON-RPC endpoints
-- Websockets JSON-RPC endpoints
-
-### `grid-storage`
-Contains grid specific storage implementation
-- Ledger Storage
-- Accounts Storage
-
-### `grid-svm`
-Contains Solana specific runtime implementations
-- L1 Account Loading
-- Transaction Processor
-- Program Caching
-- VM Interactions
+|Package|Crates.io|Authors|
+|---|---|---|
+|grid-cli|[![Crates.io](https://img.shields.io/crates/v/grid-cli.svg?color=0000FF)](https://crates.io/crates/grid-cli)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node|[![Crates.io](https://img.shields.io/crates/v/grid-node.svg?color=0000FF)](https://crates.io/crates/grid-node)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node-core|[![Crates.io](https://img.shields.io/crates/v/grid-node-core.svg?color=0000FF)](https://crates.io/crates/grid-node-core)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node-router|[![Crates.io](https://img.shields.io/crates/v/grid-node-router.svg?color=0000FF)](https://crates.io/crates/grid-node-router)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node-runtime|[![Crates.io](https://img.shields.io/crates/v/grid-node-runtime.svg?color=0000FF)](https://crates.io/crates/grid-node-runtime)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node-solana|[![Crates.io](https://img.shields.io/crates/v/grid-node-solana.svg?color=0000FF)](https://crates.io/crates/grid-node-solana)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node-solana-rpc|[![Crates.io](https://img.shields.io/crates/v/grid-node-solana-rpc.svg?color=0000FF)](https://crates.io/crates/grid-node-solana-rpc)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|
+|grid-node-solana-svm|[![Crates.io](https://img.shields.io/crates/v/grid-node-solana-svm.svg?color=0000FF)](https://crates.io/crates/grid-node-solana-svm)|[![Authors](https://img.shields.io/badge/authors-Sonic_Engineering-0000FF.svg)](https://sonic.game)|

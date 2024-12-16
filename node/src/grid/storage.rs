@@ -1,16 +1,14 @@
 use grid_node_core::Network;
-use grid_node_runtime::Runtime;
+use grid_node_storage::Storage;
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 
 //------------------------------------------
 // Runtime
 //------------------------------------------
 
-/// GridRuntime.
+/// GridStorage.
 ///
-/// A specific Runtime implementation.
-///
-/// This one utilizes the SVM API.
+/// A specific Storage implementation.
 ///
 /// Important Note:
 /// The Struct(Arc<InnerStruct>) with impl Deref pattern
@@ -19,10 +17,10 @@ use std::{marker::PhantomData, ops::Deref, sync::Arc};
 /// more heap allocation per Arc<T>.
 ///
 #[derive(Clone, Debug)]
-pub struct GridRuntime<N: Network>(Arc<InnerGridRuntime<N>>);
+pub struct GridStorage<N: Network>(Arc<InnerGridStorage<N>>);
 
-impl<N: Network> Deref for GridRuntime<N> {
-    type Target = Arc<InnerGridRuntime<N>>;
+impl<N: Network> Deref for GridStorage<N> {
+    type Target = Arc<InnerGridStorage<N>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -30,20 +28,16 @@ impl<N: Network> Deref for GridRuntime<N> {
 }
 
 #[derive(Clone, Debug)]
-pub struct InnerGridRuntime<N: Network> {
+pub struct InnerGridStorage<N: Network> {
     _network: PhantomData<N>,
 }
 
-impl<N: Network> GridRuntime<N> {
+impl<N: Network> GridStorage<N> {
     pub fn new() -> Self {
-        Self(Arc::new(InnerGridRuntime {
+        Self(Arc::new(InnerGridStorage {
             _network: Default::default(),
         }))
     }
 }
 
-impl<N: Network> Runtime<N> for GridRuntime<N> {
-    fn process_transaction(&self) {
-        println!("Processing transaction...");
-    }
-}
+impl<N: Network> Storage<N> for GridStorage<N> {}

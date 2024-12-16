@@ -3,14 +3,22 @@
 members = [
 	"cache",
 	"cli",
+	"logger",
 	"node",
+	"node/builder",
 	"node/core",
 	"node/router",
 	"node/runtime",
 	"node/solana",
 	"node/solana/rpc",
 	"node/solana/svm",
+	"node/spawner",
+	"node/storage",
 	"p2p",
+]
+
+exclude = [
+	"node/examples/sfn"
 ]
 
 resolver = "2"
@@ -31,6 +39,8 @@ clap = { version = "4.5.21", features = ["derive"] }
 jsonrpsee = { version = "0.24.7", features = ["full"] }
 thiserror = "2.0.3"
 tokio = { version = "1.42.0", features = ["rt", "rt-multi-thread"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["std", "env-filter"] }
 
 solana-account-decoder = "2.1.4"
 solana-bpf-loader-program = "2.1.4"
@@ -45,11 +55,15 @@ solana-transaction-status = "2.1.4"
 
 grid-cli = { version = "=0.1.0", path = "cli" }
 grid-cache = { version = "=0.1.0", path = "cache" }
+grid-logger = { version = "=0.1.0", path = "logger" }
 grid-node = { version = "=0.1.0", path = "node" }
+grid-node-builder = { version = "=0.1.0", path = "node/builder" }
 grid-node-core = { version = "=0.1.0", path = "node/core" }
 grid-node-router = { version = "=0.1.0", path = "node/router" }
 grid-node-runtime = { version = "=0.1.0", path = "node/runtime" }
 grid-node-solana = { version = "=0.1.0", path = "node/solana" }
 grid-node-solana-rpc = { version = "=0.1.0", path = "node/solana/rpc" }
 grid-node-solana-svm = { version = "=0.1.0", path = "node/solana/svm" }
+grid-node-storage = { version = "=0.1.0", path = "node/storage" }
+grid-node-spawner = { version = "=0.1.0", path = "node/spawner" }
 grid-p2p = { version = "=0.1.0", path = "p2p" }

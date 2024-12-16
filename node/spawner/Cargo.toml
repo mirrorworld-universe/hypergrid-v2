@@ -1,5 +1,5 @@
 [package]
-name = "grid-node-router"
+name = "grid-node-spawner"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -12,5 +12,4 @@ edition = { workspace = true }
 anyhow = { workspace = true }
 async-trait = { workspace = true }
 grid-node-core = { workspace = true }
-grid-node-solana-rpc = { workspace = true }
 tokio = { workspace = true }
