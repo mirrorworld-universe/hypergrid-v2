@@ -4,7 +4,6 @@ members = [
 	"cli",
 	"logger",
 	"node",
-	"node/builder",
 	"node/core",
 	"node/router",
 	"node/runtime",
@@ -16,7 +15,6 @@ members = [
 ]
 
 exclude = [
-	"node/examples/sfn"
 ]
 
 resolver = "2"
@@ -54,7 +52,6 @@ solana-transaction-status = "2.1.4"
 grid-cli = { version = "=0.1.0", path = "cli" }
 grid-logger = { version = "=0.1.0", path = "logger" }
 grid-node = { version = "=0.1.0", path = "node" }
-grid-node-builder = { version = "=0.1.0", path = "node/builder" }
 grid-node-core = { version = "=0.1.0", path = "node/core" }
 grid-node-router = { version = "=0.1.0", path = "node/router" }
 grid-node-runtime = { version = "=0.1.0", path = "node/runtime" }

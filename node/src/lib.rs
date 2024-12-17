@@ -1,3 +1,4 @@
+pub mod config;
 pub mod grid;
 
 use crate::grid::Grid;
