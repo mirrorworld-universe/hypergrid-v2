@@ -1,5 +1,6 @@
 pub mod builder;
 pub mod config;
+pub mod error;
 pub mod grid;
 
 use crate::{config::RoutingLayerConfig, grid::Grid};

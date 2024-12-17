@@ -1,4 +1,5 @@
-use crate::{config::RoutingLayerConfig, Grid, Node};
+use crate::{config::RoutingLayerConfig, error::NodeError, Grid, Node};
+use anyhow::{bail, Result};
 use grid_node_core::Network;
 use std::marker::PhantomData;
 
@@ -10,9 +11,9 @@ pub trait Builder<N: Network>: Clone {
     ///
     /// Does not consume Self.
     ///
-    fn build(&self) -> Node<N>;
+    /// Fallible for incorrect configuration cases.
+    fn build(&self) -> Result<Node<N>>;
 }
-
 #[derive(Clone, Debug)]
 pub struct NodeBuilder<N: Network> {
     _network: PhantomData<N>,
@@ -55,9 +56,18 @@ impl GridNodeBuilder {
     }
 }
 
-impl<N: Network> Builder<N> {
-    pub fn build(&self) -> Node {
-        Node::new_grid(self.routing_config.clone())
+impl<N: Network> Builder<N> for GridNodeBuilder {
+    fn build(&self) -> Result<Node<N>> {
+        let routing_config = match self.routing_config.clone() {
+            Some(cfg) => cfg,
+            None => {
+                bail!(NodeError::InvalidNodeConfig(String::from(
+                    "need a routing config"
+                )))
+            }
+        };
+
+        Ok(Node::new_grid(routing_config))
     }
 }
 
@@ -65,7 +75,7 @@ impl<N: Network> Builder<N> {
 // Data Node Builder.
 //------------------------------------------
 
-impl NodeBuilder {
+impl<N: Network> NodeBuilder<N> {
     /// Instantiate new Data Node builder.
     pub fn data_node() -> DataNodeBuilder {
         DataNodeBuilder::new()
