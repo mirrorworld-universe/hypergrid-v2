@@ -25,6 +25,12 @@ pub enum Node<N: Network> {
     /// transactions
     ///
     Grid(Arc<Grid<N>>),
+    // /// Data Node Type
+    // ///
+    // /// Mainly responsible for hypergrid's distributed
+    // /// data availability layer
+    // ///
+    // Data(Arc<Data<N>>),
 }
 
 impl<N: Network> Node<N> {

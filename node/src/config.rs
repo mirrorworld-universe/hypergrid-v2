@@ -2,6 +2,7 @@ use crate::grid::runtime::GridRuntime;
 use grid_node_core::{Network, NodeType};
 use std::net::IpAddr;
 
+#[derive(Clone, Debug)]
 pub struct RoutingLayerConfig {
     pub node_ip: IpAddr,
     pub node_type: NodeType,
