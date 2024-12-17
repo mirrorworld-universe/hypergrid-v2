@@ -1,4 +1,4 @@
-use crate::grid::runtime::GridRuntime;
+use crate::{config::RoutingLayerConfig, grid::runtime::GridRuntime};
 use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::{Network, NodeType};
@@ -61,18 +61,13 @@ pub struct InnerGridRouter<N: Network> {
 }
 
 impl<N: Network> GridRouter<N> {
-    pub fn new(
-        node_ip: IpAddr,
-        node_type: NodeType,
-        rpc_port: u16,
-        runtime: GridRuntime<N>,
-    ) -> Self {
+    pub fn new(config: RoutingLayerConfig, runtime: GridRuntime<N>) -> Self {
         Self(Arc::new(InnerGridRouter {
-            node_ip,
-            node_type,
-            rpc_port,
-            runtime,
+            node_ip: config.node_ip,
+            node_type: config.node_type,
+            rpc_port: config.rpc_port,
             _network: Default::default(),
+            runtime,
         }))
     }
 }

@@ -2,7 +2,7 @@ pub mod builder;
 pub mod config;
 pub mod grid;
 
-use crate::grid::Grid;
+use crate::{config::RoutingLayerConfig, grid::Grid};
 use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::{Network, NodeType};
@@ -28,13 +28,8 @@ pub enum Node<N: Network> {
 }
 
 impl<N: Network> Node<N> {
-    pub fn new_grid(
-        node_ip: IpAddr,
-        node_type: NodeType,
-        rpc_port: u16,
-        rpc_pubsub_port: u16,
-    ) -> Self {
-        Self::Grid(Arc::new(Grid::new(node_ip, node_type, rpc_port).unwrap()))
+    pub fn new_grid(routing_config: RoutingLayerConfig) -> Self {
+        Self::Grid(Arc::new(Grid::new(routing_config).unwrap()))
     }
 }
 

@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use grid_logger::{initialize_logger, tracing::*};
-use grid_node::NodeScaffolding;
+use grid_node::{config::RoutingLayerConfig, NodeScaffolding};
 use grid_node_core::{network::Solana, NodeType};
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tokio::runtime::{self, Runtime};
@@ -77,8 +77,9 @@ impl Node {
             None => DEFAULT_RPC_PUBSUB_PORT,
         };
 
-        let node: grid_node::Node<Solana> =
-            grid_node::Node::<Solana>::new_grid(node_ip, node_type, rpc_port, rpc_pubsub_port);
+        let routing_layer_config = RoutingLayerConfig::new(node_ip, node_type, rpc_port);
+
+        let node = grid_node::Node::<Solana>::new_grid(routing_layer_config);
 
         debug!("Node instance: {:?}", node);
 
