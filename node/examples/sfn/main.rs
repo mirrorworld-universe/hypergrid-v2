@@ -22,15 +22,16 @@
 // const DEFAULT_NODE_IP: IpAddr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
 // const DEFAULT_NODE_TYPE: NodeType = NodeType::Grid;
 //
-// fn main() {
-//     let grid = SFN::<network::Solana>::new(
-//         DEFAULT_NODE_IP,
-//         DEFAULT_NODE_TYPE,
-//         DEFAULT_RPC_PORT,
-//         SFNRuntime::new(),
-//         SFNStorage::new(),
-//     );
-// }
+fn main() {
+    println!("Simple Full Node Running...");
+    // let grid = SFN::<network::Solana>::new(
+    //     DEFAULT_NODE_IP,
+    //     DEFAULT_NODE_TYPE,
+    //     DEFAULT_RPC_PORT,
+    //     SFNRuntime::new(),
+    //     SFNStorage::new(),
+    // );
+}
 //
 // //------------------------------------------
 // // Simple Full Node
