@@ -1,3 +1,6 @@
+//! Using Layer Configs to prevent multiple argument
+//! changes when modifying configuration parameters
+//! for layers
 use crate::grid::runtime::GridRuntime;
 use grid_node_core::{Network, NodeType};
 use std::net::IpAddr;

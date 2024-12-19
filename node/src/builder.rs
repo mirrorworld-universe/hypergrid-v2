@@ -1,7 +1,10 @@
 use crate::{config::RoutingLayerConfig, error::NodeError, Grid, Node};
 use anyhow::{bail, Result};
-use grid_node_core::Network;
-use std::marker::PhantomData;
+use grid_node_core::{Network, NodeType};
+use std::{
+    marker::PhantomData,
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+};
 
 /// Forces a [`Clone`] for the reusable build
 /// associated function.
@@ -33,30 +36,33 @@ impl<N: Network> NodeBuilder<N> {
 
 impl<N: Network> NodeBuilder<N> {
     /// Instantiate new Grid Node builder.
-    pub fn grid_node() -> GridNodeBuilder {
-        GridNodeBuilder::new()
+    pub fn grid_node(&self) -> GridNodeBuilder<N> {
+        GridNodeBuilder::<N>::new()
     }
 }
 
 #[derive(Clone, Debug)]
-pub struct GridNodeBuilder {
+pub struct GridNodeBuilder<N: Network> {
     routing_config: Option<RoutingLayerConfig>,
+    _network: PhantomData<N>,
 }
 
-impl GridNodeBuilder {
+impl<N: Network> GridNodeBuilder<N> {
     pub fn new() -> Self {
         Self {
             routing_config: None,
+            _network: Default::default(),
         }
     }
 
-    pub fn routing(mut self, config: RoutingLayerConfig) -> Self {
+    pub fn routing(mut self, node_ip: IpAddr, node_type: NodeType, rpc_port: u16) -> Self {
+        let config = RoutingLayerConfig::new(node_ip, node_type, rpc_port);
         self.routing_config = Some(config);
         self
     }
 }
 
-impl<N: Network> Builder<N> for GridNodeBuilder {
+impl<N: Network> Builder<N> for GridNodeBuilder<N> {
     fn build(&self) -> Result<Node<N>> {
         let routing_config = match self.routing_config.clone() {
             Some(cfg) => cfg,
