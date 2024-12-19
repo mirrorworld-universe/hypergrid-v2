@@ -95,12 +95,9 @@ impl Node {
             info!("Running Node");
             tokio::spawn(async move { grid.run().await });
 
+            info!("Node RPC Gateway: {}", SocketAddr::new(node_ip, rpc_port));
             info!(
-                "Node RPC Gateway running: {}",
-                SocketAddr::new(node_ip, rpc_port)
-            );
-            info!(
-                "Node RPC (PubSub) running: {}",
+                "Node RPC (PubSub): {}",
                 SocketAddr::new(node_ip, rpc_pubsub_port)
             );
             std::future::pending::<()>().await;

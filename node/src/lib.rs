@@ -34,12 +34,6 @@ pub enum Node<N: Network> {
     // Data(Arc<Data<N>>),
 }
 
-impl<N: Network> Node<N> {
-    pub fn new_grid(routing_config: RoutingLayerConfig) -> Self {
-        Self::Grid(Arc::new(Grid::new(routing_config).unwrap()))
-    }
-}
-
 /// NodeScaffolding Trait.
 ///
 /// Defines the behaviors expected from a crude Node.

@@ -4,6 +4,7 @@ use grid_node_core::{Network, NodeType};
 use std::{
     marker::PhantomData,
     net::{IpAddr, Ipv4Addr, SocketAddr},
+    sync::Arc,
 };
 
 /// Forces a [`Clone`] for the reusable build
@@ -73,7 +74,7 @@ impl<N: Network> Builder<N> for GridNodeBuilder<N> {
             }
         };
 
-        Ok(Node::new_grid(routing_config))
+        Ok(Node::Grid(Arc::new(Grid::new(routing_config)?)))
     }
 }
 
