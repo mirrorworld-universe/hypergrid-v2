@@ -22,29 +22,22 @@ pub trait Builder<N: Network>: Clone {
     /// Fallible for incorrect configuration cases.
     fn build(&self) -> Result<Node<N>>;
 }
+
 #[derive(Clone, Debug)]
 pub struct NodeBuilder<N: Network> {
     _network: PhantomData<N>,
 }
 
 impl<N: Network> NodeBuilder<N> {
-    pub fn new() -> Self {
-        Self {
-            _network: Default::default(),
-        }
+    /// Instantiate new Grid Node builder.
+    pub fn grid_node() -> GridNodeBuilder<N> {
+        GridNodeBuilder::<N>::new()
     }
 }
 
 //------------------------------------------
 // Grid Node Builder.
 //------------------------------------------
-
-impl<N: Network> NodeBuilder<N> {
-    /// Instantiate new Grid Node builder.
-    pub fn grid_node(&self) -> GridNodeBuilder<N> {
-        GridNodeBuilder::<N>::new()
-    }
-}
 
 #[derive(Clone, Debug)]
 pub struct GridNodeBuilder<N: Network> {

@@ -81,8 +81,7 @@ impl Node {
         };
 
         // let node = grid_node::Node::<Solana>::new_grid(routing_layer_config);
-        let node = NodeBuilder::<Solana>::new()
-            .grid_node()
+        let node = NodeBuilder::<Solana>::grid_node()
             .routing(node_ip, node_type, rpc_port)
             .runtime()
             .build()?;
