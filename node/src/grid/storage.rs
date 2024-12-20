@@ -1,4 +1,4 @@
-use grid_node_core::Network;
+use grid_node_core::prelude::*;
 use grid_node_storage::Storage;
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 
@@ -17,10 +17,10 @@ use std::{marker::PhantomData, ops::Deref, sync::Arc};
 /// more heap allocation per Arc<T>.
 ///
 #[derive(Clone, Debug)]
-pub(crate) struct GridStorage<N: Network>(Arc<InnerGridStorage<N>>);
+pub(crate) struct GridStorage<C: Cluster>(Arc<InnerGridStorage<C>>);
 
-impl<N: Network> Deref for GridStorage<N> {
-    type Target = Arc<InnerGridStorage<N>>;
+impl<C: Cluster> Deref for GridStorage<C> {
+    type Target = Arc<InnerGridStorage<C>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -28,11 +28,11 @@ impl<N: Network> Deref for GridStorage<N> {
 }
 
 #[derive(Clone, Debug)]
-pub struct InnerGridStorage<N: Network> {
-    _network: PhantomData<N>,
+pub struct InnerGridStorage<C: Cluster> {
+    _network: PhantomData<C>,
 }
 
-impl<N: Network> GridStorage<N> {
+impl<C: Cluster> GridStorage<C> {
     pub fn new() -> Self {
         Self(Arc::new(InnerGridStorage {
             _network: Default::default(),
@@ -40,4 +40,4 @@ impl<N: Network> GridStorage<N> {
     }
 }
 
-impl<N: Network> Storage<N> for GridStorage<N> {}
+impl<C: Cluster> Storage<C> for GridStorage<C> {}

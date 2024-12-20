@@ -2,7 +2,7 @@
 //! changes when modifying configuration parameters
 //! for layers
 use crate::grid::runtime::GridRuntime;
-use grid_node_core::{Network, NodeType};
+use grid_node_core::prelude::*;
 use std::net::IpAddr;
 
 //------------------------------------------

@@ -6,7 +6,7 @@ pub mod grid;
 use crate::{config::RoutingLayerConfig, grid::Grid};
 use anyhow::Result;
 use async_trait::async_trait;
-use grid_node_core::{Network, NodeType};
+use grid_node_core::prelude::*;
 use grid_node_router::Routing;
 use std::{net::IpAddr, sync::Arc};
 
@@ -19,13 +19,13 @@ use std::{net::IpAddr, sync::Arc};
 /// Lists the available Node types.
 ///
 #[derive(Debug)]
-pub enum Node<N: Network> {
+pub enum Node<C: Cluster> {
     /// Grid Node Type
     ///
     /// Mainly responsible for sequencing incoming
     /// transactions
     ///
-    Grid(Arc<Grid<N>>),
+    Grid(Arc<Grid<C>>),
     // /// Data Node Type
     // ///
     // /// Mainly responsible for hypergrid's distributed

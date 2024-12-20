@@ -1,15 +1,9 @@
 pub mod network;
+pub mod node;
 
-/// Network Trait.
-///
-/// Identifies the different clusters that exist
-/// within the network.
-///
-pub trait Network: Copy + Clone + Send + Sync + 'static {
-    const NAME: &'static str;
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum NodeType {
-    Grid,
+/// Contains all the Node core types and structures
+pub mod prelude {
+    use super::*;
+    pub use network::*;
+    pub use node::*;
 }

@@ -1,6 +1,6 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use grid_node_core::{Network, NodeType};
+use grid_node_core::prelude::*;
 use grid_node_solana_rpc::{
     jsonrpsee::{server::ServerBuilder, tokio::net::ToSocketAddrs},
     rpc_http::SolanaRpcServer,
@@ -16,7 +16,6 @@ use std::net::{IpAddr, SocketAddr};
 /// Routing are expected to be in the same base url
 /// but different ports.
 #[async_trait]
-// pub trait Routing<N: Network>: InboundRpcHttp + InboundRpcPubSub {
 pub trait Routing: InboundRpcHttp {
     //------------------------------------------
     // Associated Functions

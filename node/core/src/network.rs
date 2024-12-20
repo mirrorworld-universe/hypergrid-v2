@@ -1,15 +1,15 @@
-use super::Network;
-
-#[derive(Copy, Clone, Debug)]
-pub struct Solana;
-
-impl Network for Solana {
-    const NAME: &'static str = "solana";
+/// Cluster Trait.
+///
+/// Identifies the different clusters that exist
+/// within the network.
+///
+pub trait Cluster: Copy + Clone + Send + Sync + 'static {
+    const NAME: &'static str;
 }
 
 #[derive(Copy, Clone, Debug)]
-pub struct Canary {}
+pub struct CanaryV0 {}
 
-impl Network for Canary {
+impl Cluster for CanaryV0 {
     const NAME: &'static str = "canary";
 }

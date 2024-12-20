@@ -1,4 +1,4 @@
-use grid_node_core::Network;
+use grid_node_core::prelude::*;
 
 /// Storage Trait.
 ///
@@ -6,4 +6,4 @@ use grid_node_core::Network;
 /// functions expected from different storage
 /// implementations (e.g. RocksDB)
 ///
-pub trait Storage<N: Network> {}
+pub trait Storage<C: Cluster> {}

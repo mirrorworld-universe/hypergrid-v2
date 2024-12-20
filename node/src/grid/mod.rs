@@ -8,7 +8,7 @@ use crate::{
 };
 use anyhow::Result;
 use async_trait::async_trait;
-use grid_node_core::{Network, NodeType};
+use grid_node_core::prelude::*;
 use grid_node_router::{InboundRpcHttp, InboundRpcPubSub, Routing};
 use grid_node_runtime::Runtime;
 use grid_node_solana_rpc::{
@@ -40,18 +40,18 @@ use storage::GridStorage;
 /// bootstrapping the network.
 ///
 #[derive(Clone, Debug)]
-pub struct Grid<N: Network> {
-    router: GridRouter<N>,
-    runtime: GridRuntime<N>,
-    storage: GridStorage<N>,
+pub struct Grid<C: Cluster> {
+    router: GridRouter<C>,
+    runtime: GridRuntime<C>,
+    storage: GridStorage<C>,
 }
 
-impl<N: Network> Grid<N> {
+impl<C: Cluster> Grid<C> {
     pub fn new(
         routing_config: RoutingLayerConfig,
         runtime_config: RuntimeLayerConfig,
     ) -> Result<Self> {
-        let runtime = GridRuntime::<N>::new(runtime_config);
+        let runtime = GridRuntime::<C>::new(runtime_config);
 
         Ok(Self {
             router: GridRouter::new(routing_config, runtime.clone()),
@@ -68,7 +68,7 @@ impl<N: Network> Grid<N> {
 //------------------------------------------
 
 #[async_trait]
-impl<N: Network> NodeScaffolding for Grid<N> {
+impl<C: Cluster> NodeScaffolding for Grid<C> {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------

@@ -4,7 +4,7 @@ use crate::{
     Grid, Node,
 };
 use anyhow::{bail, Result};
-use grid_node_core::{Network, NodeType};
+use grid_node_core::prelude::*;
 use std::{
     marker::PhantomData,
     net::{IpAddr, Ipv4Addr, SocketAddr},
@@ -14,24 +14,24 @@ use std::{
 /// Forces a [`Clone`] for the reusable build
 /// associated function.
 ///
-pub trait Builder<N: Network>: Clone {
+pub trait Builder<C: Cluster>: Clone {
     /// Reusable builder associated function.
     ///
     /// Does not consume Self.
     ///
     /// Fallible for incorrect configuration cases.
-    fn build(&self) -> Result<Node<N>>;
+    fn build(&self) -> Result<Node<C>>;
 }
 
 #[derive(Clone, Debug)]
-pub struct NodeBuilder<N: Network> {
-    _network: PhantomData<N>,
+pub struct NodeBuilder<C: Cluster> {
+    _network: PhantomData<C>,
 }
 
-impl<N: Network> NodeBuilder<N> {
+impl<C: Cluster> NodeBuilder<C> {
     /// Instantiate new Grid Node builder.
-    pub fn grid_node() -> GridNodeBuilder<N> {
-        GridNodeBuilder::<N>::new()
+    pub fn grid_node() -> GridNodeBuilder<C> {
+        GridNodeBuilder::<C>::new()
     }
 }
 
@@ -40,13 +40,13 @@ impl<N: Network> NodeBuilder<N> {
 //------------------------------------------
 
 #[derive(Clone, Debug)]
-pub struct GridNodeBuilder<N: Network> {
+pub struct GridNodeBuilder<C: Cluster> {
     routing_config: Option<RoutingLayerConfig>,
     runtime_config: Option<RuntimeLayerConfig>,
-    _network: PhantomData<N>,
+    _network: PhantomData<C>,
 }
 
-impl<N: Network> GridNodeBuilder<N> {
+impl<C: Cluster> GridNodeBuilder<C> {
     pub fn new() -> Self {
         Self {
             routing_config: None,
@@ -68,8 +68,8 @@ impl<N: Network> GridNodeBuilder<N> {
     }
 }
 
-impl<N: Network> Builder<N> for GridNodeBuilder<N> {
-    fn build(&self) -> Result<Node<N>> {
+impl<C: Cluster> Builder<C> for GridNodeBuilder<C> {
+    fn build(&self) -> Result<Node<C>> {
         let routing_config = match self.routing_config.clone() {
             Some(cfg) => cfg,
             None => {
@@ -99,7 +99,7 @@ impl<N: Network> Builder<N> for GridNodeBuilder<N> {
 // Data Node Builder.
 //------------------------------------------
 
-impl<N: Network> NodeBuilder<N> {
+impl<C: Cluster> NodeBuilder<C> {
     /// Instantiate new Data Node builder.
     pub fn data_node() -> DataNodeBuilder {
         DataNodeBuilder::new()

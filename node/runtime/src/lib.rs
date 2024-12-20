@@ -1,4 +1,4 @@
-use grid_node_core::Network;
+use grid_node_core::prelude::*;
 
 /// Runtime Trait.
 ///

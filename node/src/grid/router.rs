@@ -1,7 +1,7 @@
 use crate::{config::RoutingLayerConfig, grid::runtime::GridRuntime};
 use anyhow::Result;
 use async_trait::async_trait;
-use grid_node_core::{Network, NodeType};
+use grid_node_core::prelude::*;
 use grid_node_router::{InboundRpcHttp, Routing};
 use grid_node_runtime::Runtime;
 use grid_node_solana_rpc::{
@@ -41,10 +41,10 @@ use std::{marker::PhantomData, ops::Deref, sync::Arc};
 /// more heap allocation per Arc<T>.
 ///
 #[derive(Clone, Debug)]
-pub(crate) struct GridRouter<N: Network>(Arc<InnerGridRouter<N>>);
+pub(crate) struct GridRouter<C: Cluster>(Arc<InnerGridRouter<C>>);
 
-impl<N: Network> Deref for GridRouter<N> {
-    type Target = Arc<InnerGridRouter<N>>;
+impl<C: Cluster> Deref for GridRouter<C> {
+    type Target = Arc<InnerGridRouter<C>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -52,16 +52,16 @@ impl<N: Network> Deref for GridRouter<N> {
 }
 
 #[derive(Clone, Debug)]
-pub struct InnerGridRouter<N: Network> {
+pub struct InnerGridRouter<C: Cluster> {
     node_ip: IpAddr,
     rpc_port: u16,
     node_type: NodeType,
-    runtime: GridRuntime<N>,
-    _network: PhantomData<N>,
+    runtime: GridRuntime<C>,
+    _network: PhantomData<C>,
 }
 
-impl<N: Network> GridRouter<N> {
-    pub fn new(config: RoutingLayerConfig, runtime: GridRuntime<N>) -> Self {
+impl<C: Cluster> GridRouter<C> {
+    pub fn new(config: RoutingLayerConfig, runtime: GridRuntime<C>) -> Self {
         Self(Arc::new(InnerGridRouter {
             node_ip: config.node_ip,
             node_type: config.node_type,
@@ -78,7 +78,7 @@ impl<N: Network> GridRouter<N> {
 
 // Routing
 #[async_trait]
-impl<N: Network> Routing for GridRouter<N> {
+impl<C: Cluster> Routing for GridRouter<C> {
     /// Enable all Routing listeners
     async fn enable_listeners(&self) -> Result<()> {
         self.enable_listener().await?;
@@ -96,7 +96,7 @@ impl<N: Network> Routing for GridRouter<N> {
 
 // InboundRpcHttp
 #[async_trait]
-impl<N: Network> InboundRpcHttp for GridRouter<N> {
+impl<C: Cluster> InboundRpcHttp for GridRouter<C> {
     fn rpc_url(&self) -> SocketAddr {
         SocketAddr::new(self.node_ip, self.rpc_port)
     }
@@ -108,7 +108,7 @@ impl<N: Network> InboundRpcHttp for GridRouter<N> {
 
 // SolanaRpcServer
 #[async_trait]
-impl<N: Network> SolanaRpcServer for GridRouter<N> {
+impl<C: Cluster> SolanaRpcServer for GridRouter<C> {
     async fn send_transaction(
         &self,
         transaction: String,
@@ -131,11 +131,11 @@ impl<N: Network> SolanaRpcServer for GridRouter<N> {
 }
 
 // // InboundRpcPubSub
-// impl<N: Network> InboundRpcPubSub for GridRouter<N> {}
+// impl<C: Cluster> InboundRpcPubSub for GridRouter<C> {}
 //
 // // SolanaRpcPubSubServer
 // #[async_trait]
-// impl<N: Network> SolanaRpcPubSubServer for GridRouter<N> {
+// impl<C: Cluster> SolanaRpcPubSubServer for GridRouter<C> {
 //     async fn slot_subscribe(&self, pending: PendingSubscriptionSink) -> SubscriptionResult {
 //         Ok(())
 //     }

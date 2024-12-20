@@ -1,4 +1,4 @@
-use grid_node_core::Network;
+use grid_node_core::prelude::*;
 use std::future::Future;
 
 /// Spawning Trait.
@@ -8,7 +8,7 @@ use std::future::Future;
 ///
 /// Good for enabling Node layers to spawn services,
 /// daemons, jobs, etc.
-pub trait Spawning<N: Network> {
+pub trait Spawning<C: Cluster> {
     /// Spawns a task with the given future.
     ///
     /// Used specifically for spawning long-running tasks.

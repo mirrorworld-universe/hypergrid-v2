@@ -1,4 +1,4 @@
-use grid_node_core::Network;
+use grid_node_core::prelude::*;
 use grid_node_runtime::Runtime;
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 
@@ -21,10 +21,10 @@ use crate::config::RuntimeLayerConfig;
 /// more heap allocation per Arc<T>.
 ///
 #[derive(Clone, Debug)]
-pub(crate) struct GridRuntime<N: Network>(Arc<InnerGridRuntime<N>>);
+pub(crate) struct GridRuntime<C: Cluster>(Arc<InnerGridRuntime<C>>);
 
-impl<N: Network> Deref for GridRuntime<N> {
-    type Target = Arc<InnerGridRuntime<N>>;
+impl<C: Cluster> Deref for GridRuntime<C> {
+    type Target = Arc<InnerGridRuntime<C>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -32,11 +32,11 @@ impl<N: Network> Deref for GridRuntime<N> {
 }
 
 #[derive(Clone, Debug)]
-pub struct InnerGridRuntime<N: Network> {
-    _network: PhantomData<N>,
+pub struct InnerGridRuntime<C: Cluster> {
+    _network: PhantomData<C>,
 }
 
-impl<N: Network> GridRuntime<N> {
+impl<C: Cluster> GridRuntime<C> {
     pub fn new(config: RuntimeLayerConfig) -> Self {
         Self(Arc::new(InnerGridRuntime {
             _network: Default::default(),
@@ -44,7 +44,7 @@ impl<N: Network> GridRuntime<N> {
     }
 }
 
-impl<N: Network> Runtime for GridRuntime<N> {
+impl<C: Cluster> Runtime for GridRuntime<C> {
     fn process_transaction(&self) {
         println!("Processing transaction...");
     }

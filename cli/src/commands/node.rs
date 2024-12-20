@@ -5,7 +5,7 @@ use grid_node::{
     builder::{Builder, NodeBuilder},
     NodeScaffolding,
 };
-use grid_node_core::{network::Solana, NodeType};
+use grid_node_core::prelude::*;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use tokio::runtime::{self, Runtime};
 
@@ -15,9 +15,8 @@ const DEFAULT_NODE_IP: IpAddr = IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1));
 const DEFAULT_NODE_TYPE: NodeType = NodeType::Grid;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-pub enum NetworkArg {
-    Solana,
-    Mock,
+pub enum ClusterArg {
+    CanaryV0,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -32,8 +31,8 @@ pub type Port = u16;
 pub struct Node {
     #[clap(short = 'v', long = "verbosity")]
     pub verbosity: Option<u8>,
-    #[clap(short = 'n', long = "network")]
-    pub network: Option<NetworkArg>,
+    #[clap(short = 'c', long = "cluster")]
+    pub cluster: Option<ClusterArg>,
     #[clap(long = "node-ip")]
     pub node_ip: Option<IpAddr>,
     #[clap(long = "node-type")]
@@ -80,8 +79,7 @@ impl Node {
             None => DEFAULT_RPC_PUBSUB_PORT,
         };
 
-        // let node = grid_node::Node::<Solana>::new_grid(routing_layer_config);
-        let node = NodeBuilder::<Solana>::grid_node()
+        let node = NodeBuilder::<CanaryV0>::grid_node()
             .routing(node_ip, node_type, rpc_port)
             .runtime()
             .build()?;
