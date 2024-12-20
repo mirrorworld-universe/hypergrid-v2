@@ -17,6 +17,7 @@ grid-node-runtime = { workspace = true }
 grid-node-solana-rpc = { workspace = true }
 grid-node-solana-svm = { workspace = true }
 grid-node-storage = { workspace = true }
+libp2p = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true }
 
