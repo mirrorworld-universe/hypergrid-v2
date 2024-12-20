@@ -3,7 +3,6 @@ use clap::{Parser, ValueEnum};
 use grid_logger::{initialize_logger, tracing::*};
 use grid_node::{
     builder::{Builder, NodeBuilder},
-    config::RoutingLayerConfig,
     NodeScaffolding,
 };
 use grid_node_core::{network::Solana, NodeType};
@@ -85,6 +84,7 @@ impl Node {
         let node = NodeBuilder::<Solana>::new()
             .grid_node()
             .routing(node_ip, node_type, rpc_port)
+            .runtime()
             .build()?;
 
         debug!("Node instance: {:?}", node);
