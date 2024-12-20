@@ -42,7 +42,7 @@ impl<N: Network> GridRuntime<N> {
     }
 }
 
-impl<N: Network> Runtime<N> for GridRuntime<N> {
+impl<N: Network> Runtime for GridRuntime<N> {
     fn process_transaction(&self) {
         println!("Processing transaction...");
     }

@@ -62,7 +62,7 @@ impl<N: Network> Grid<N> {
 //------------------------------------------
 
 #[async_trait]
-impl<N: Network> NodeScaffolding<N> for Grid<N> {
+impl<N: Network> NodeScaffolding for Grid<N> {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------

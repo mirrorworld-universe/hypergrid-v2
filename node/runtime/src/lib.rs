@@ -5,6 +5,6 @@ use grid_node_core::Network;
 /// Defines the expected data and functions from
 /// different runtime implementations (e.g. SVM API).
 ///
-pub trait Runtime<N: Network> {
+pub trait Runtime {
     fn process_transaction(&self);
 }

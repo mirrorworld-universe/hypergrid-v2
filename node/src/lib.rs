@@ -48,7 +48,7 @@ pub enum Node<N: Network> {
 /// A Node is expected to have Routing, because what is a node
 /// without routing?
 #[async_trait]
-pub trait NodeScaffolding<N: Network> {
+pub trait NodeScaffolding {
     //------------------------------------------
     // Associated Functions
     //------------------------------------------
