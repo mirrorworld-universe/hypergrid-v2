@@ -2,7 +2,10 @@ pub mod router;
 pub mod runtime;
 pub mod storage;
 
-use crate::{config::RoutingLayerConfig, NodeScaffolding};
+use crate::{
+    config::{RoutingLayerConfig, RuntimeLayerConfig},
+    NodeScaffolding,
+};
 use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::{Network, NodeType};
@@ -44,15 +47,18 @@ pub struct Grid<N: Network> {
 }
 
 impl<N: Network> Grid<N> {
-    pub fn new(routing_config: RoutingLayerConfig) -> Result<Self> {
-        let runtime = GridRuntime::<N>::new();
+    pub fn new(
+        routing_config: RoutingLayerConfig,
+        runtime_config: RuntimeLayerConfig,
+    ) -> Result<Self> {
+        let runtime = GridRuntime::<N>::new(runtime_config);
 
         Ok(Self {
-            router: GridRouter::new(routing_config, runtime),
+            router: GridRouter::new(routing_config, runtime.clone()),
             // TODO: Configure GridStorage;
             storage: GridStorage::new(),
             // TODO: Configure GridRuntime;
-            runtime: GridRuntime::new(),
+            runtime,
         })
     }
 }

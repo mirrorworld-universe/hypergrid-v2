@@ -1,4 +1,8 @@
-use crate::{config::RoutingLayerConfig, error::NodeError, Grid, Node};
+use crate::{
+    config::{RoutingLayerConfig, RuntimeLayerConfig},
+    error::NodeError,
+    Grid, Node,
+};
 use anyhow::{bail, Result};
 use grid_node_core::{Network, NodeType};
 use std::{
@@ -45,6 +49,7 @@ impl<N: Network> NodeBuilder<N> {
 #[derive(Clone, Debug)]
 pub struct GridNodeBuilder<N: Network> {
     routing_config: Option<RoutingLayerConfig>,
+    runtime_config: Option<RuntimeLayerConfig>,
     _network: PhantomData<N>,
 }
 
@@ -52,6 +57,7 @@ impl<N: Network> GridNodeBuilder<N> {
     pub fn new() -> Self {
         Self {
             routing_config: None,
+            runtime_config: None,
             _network: Default::default(),
         }
     }
@@ -61,6 +67,12 @@ impl<N: Network> GridNodeBuilder<N> {
         self.routing_config = Some(config);
         self
     }
+
+    pub fn runtime(mut self) -> Self {
+        let config = RuntimeLayerConfig::new();
+        self.runtime_config = Some(config);
+        self
+    }
 }
 
 impl<N: Network> Builder<N> for GridNodeBuilder<N> {
@@ -68,13 +80,25 @@ impl<N: Network> Builder<N> for GridNodeBuilder<N> {
         let routing_config = match self.routing_config.clone() {
             Some(cfg) => cfg,
             None => {
-                bail!(NodeError::InvalidNodeConfig(String::from(
-                    "need a routing config"
+                bail!(NodeError::InvalidConfig(String::from(
+                    "need a routing layer config"
                 )))
             }
         };
 
-        Ok(Node::Grid(Arc::new(Grid::new(routing_config)?)))
+        let runtime_config = match self.runtime_config.clone() {
+            Some(cfg) => cfg,
+            None => {
+                bail!(NodeError::InvalidConfig(String::from(
+                    "need a runtime layer config"
+                )))
+            }
+        };
+
+        Ok(Node::Grid(Arc::new(Grid::new(
+            routing_config,
+            runtime_config,
+        )?)))
     }
 }
 

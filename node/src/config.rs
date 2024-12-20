@@ -5,8 +5,12 @@ use crate::grid::runtime::GridRuntime;
 use grid_node_core::{Network, NodeType};
 use std::net::IpAddr;
 
+//------------------------------------------
+// Routing Layer Config
+//------------------------------------------
+
 #[derive(Clone, Debug)]
-pub struct RoutingLayerConfig {
+pub(crate) struct RoutingLayerConfig {
     pub node_ip: IpAddr,
     pub node_type: NodeType,
     pub rpc_port: u16,
@@ -19,5 +23,18 @@ impl RoutingLayerConfig {
             node_type,
             rpc_port,
         }
+    }
+}
+
+//------------------------------------------
+// Runtime Layer Config
+//------------------------------------------
+
+#[derive(Clone, Debug)]
+pub(crate) struct RuntimeLayerConfig {}
+
+impl RuntimeLayerConfig {
+    pub fn new() -> Self {
+        Self {}
     }
 }

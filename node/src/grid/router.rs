@@ -41,7 +41,7 @@ use std::{marker::PhantomData, ops::Deref, sync::Arc};
 /// more heap allocation per Arc<T>.
 ///
 #[derive(Clone, Debug)]
-pub struct GridRouter<N: Network>(Arc<InnerGridRouter<N>>);
+pub(crate) struct GridRouter<N: Network>(Arc<InnerGridRouter<N>>);
 
 impl<N: Network> Deref for GridRouter<N> {
     type Target = Arc<InnerGridRouter<N>>;

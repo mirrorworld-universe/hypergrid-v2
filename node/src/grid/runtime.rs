@@ -2,6 +2,8 @@ use grid_node_core::Network;
 use grid_node_runtime::Runtime;
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 
+use crate::config::RuntimeLayerConfig;
+
 //------------------------------------------
 // Runtime
 //------------------------------------------
@@ -19,7 +21,7 @@ use std::{marker::PhantomData, ops::Deref, sync::Arc};
 /// more heap allocation per Arc<T>.
 ///
 #[derive(Clone, Debug)]
-pub struct GridRuntime<N: Network>(Arc<InnerGridRuntime<N>>);
+pub(crate) struct GridRuntime<N: Network>(Arc<InnerGridRuntime<N>>);
 
 impl<N: Network> Deref for GridRuntime<N> {
     type Target = Arc<InnerGridRuntime<N>>;
@@ -35,7 +37,7 @@ pub struct InnerGridRuntime<N: Network> {
 }
 
 impl<N: Network> GridRuntime<N> {
-    pub fn new() -> Self {
+    pub fn new(config: RuntimeLayerConfig) -> Self {
         Self(Arc::new(InnerGridRuntime {
             _network: Default::default(),
         }))
