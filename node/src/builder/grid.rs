@@ -1,6 +1,6 @@
 use crate::{
-    config::{RoutingLayerConfig, RuntimeLayerConfig},
     error::NodeError,
+    grid::{router, runtime},
     Grid, Node,
 };
 use anyhow::{bail, Result};
@@ -41,8 +41,8 @@ impl<C: Cluster> NodeBuilder<C> {
 
 #[derive(Clone, Debug)]
 pub struct GridNodeBuilder<C: Cluster> {
-    routing_config: Option<RoutingLayerConfig>,
-    runtime_config: Option<RuntimeLayerConfig>,
+    routing_config: Option<router::Config>,
+    runtime_config: Option<runtime::Config>,
     _network: PhantomData<C>,
 }
 
@@ -56,13 +56,13 @@ impl<C: Cluster> GridNodeBuilder<C> {
     }
 
     pub fn routing(mut self, node_ip: IpAddr, node_type: NodeType, rpc_port: u16) -> Self {
-        let config = RoutingLayerConfig::new(node_ip, node_type, rpc_port);
+        let config = router::Config::new(node_ip, node_type, rpc_port);
         self.routing_config = Some(config);
         self
     }
 
     pub fn runtime(mut self) -> Self {
-        let config = RuntimeLayerConfig::new();
+        let config = runtime::Config::new();
         self.runtime_config = Some(config);
         self
     }

@@ -2,7 +2,18 @@ use grid_node_core::prelude::*;
 use grid_node_runtime::Runtime;
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 
-use crate::config::RuntimeLayerConfig;
+//------------------------------------------
+// Runtime Layer Config
+//------------------------------------------
+
+#[derive(Clone, Debug)]
+pub(crate) struct Config {}
+
+impl Config {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
 
 //------------------------------------------
 // Runtime
@@ -37,7 +48,7 @@ pub struct InnerGridRuntime<C: Cluster> {
 }
 
 impl<C: Cluster> GridRuntime<C> {
-    pub fn new(config: RuntimeLayerConfig) -> Self {
+    pub fn new(config: Config) -> Self {
         Self(Arc::new(InnerGridRuntime {
             _network: Default::default(),
         }))

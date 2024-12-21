@@ -1,9 +1,8 @@
 pub mod builder;
-pub mod config;
 pub mod error;
 pub mod grid;
 
-use crate::{config::RoutingLayerConfig, grid::Grid};
+use crate::grid::Grid;
 use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::prelude::*;

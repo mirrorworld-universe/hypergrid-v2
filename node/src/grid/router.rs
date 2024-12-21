@@ -1,6 +1,7 @@
-use crate::{config::RoutingLayerConfig, grid::runtime::GridRuntime};
+use crate::grid::runtime::GridRuntime;
 use anyhow::Result;
 use async_trait::async_trait;
+use grid_node_core::prelude::*;
 use grid_node_core::prelude::*;
 use grid_node_router::{InboundRpcHttp, Routing};
 use grid_node_runtime::Runtime;
@@ -23,9 +24,32 @@ use grid_node_solana_rpc::{
 };
 use std::{
     future::Future,
+    marker::PhantomData,
     net::{IpAddr, SocketAddr},
+    ops::Deref,
+    sync::Arc,
 };
-use std::{marker::PhantomData, ops::Deref, sync::Arc};
+
+//------------------------------------------
+// Routing Layer Config
+//------------------------------------------
+
+#[derive(Clone, Debug)]
+pub struct Config {
+    pub node_ip: IpAddr,
+    pub node_type: NodeType,
+    pub rpc_port: u16,
+}
+
+impl Config {
+    pub fn new(node_ip: IpAddr, node_type: NodeType, rpc_port: u16) -> Self {
+        Self {
+            node_ip,
+            node_type,
+            rpc_port,
+        }
+    }
+}
 
 //------------------------------------------
 // Router
@@ -61,7 +85,7 @@ pub struct InnerGridRouter<C: Cluster> {
 }
 
 impl<C: Cluster> GridRouter<C> {
-    pub fn new(config: RoutingLayerConfig, runtime: GridRuntime<C>) -> Self {
+    pub fn new(config: Config, runtime: GridRuntime<C>) -> Self {
         Self(Arc::new(InnerGridRouter {
             node_ip: config.node_ip,
             node_type: config.node_type,

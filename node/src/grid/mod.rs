@@ -2,10 +2,7 @@ pub mod router;
 pub mod runtime;
 pub mod storage;
 
-use crate::{
-    config::{RoutingLayerConfig, RuntimeLayerConfig},
-    NodeScaffolding,
-};
+use crate::NodeScaffolding;
 use anyhow::Result;
 use async_trait::async_trait;
 use grid_node_core::prelude::*;
@@ -47,10 +44,7 @@ pub struct Grid<C: Cluster> {
 }
 
 impl<C: Cluster> Grid<C> {
-    pub fn new(
-        routing_config: RoutingLayerConfig,
-        runtime_config: RuntimeLayerConfig,
-    ) -> Result<Self> {
+    pub fn new(routing_config: router::Config, runtime_config: runtime::Config) -> Result<Self> {
         let runtime = GridRuntime::<C>::new(runtime_config);
 
         Ok(Self {
