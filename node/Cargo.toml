@@ -12,6 +12,7 @@ edition = { workspace = true }
 anyhow = { workspace = true }
 async-trait = { workspace = true }
 grid-node-core = { workspace = true }
+grid-logger = { workspace = true }
 grid-node-router = { workspace = true }
 grid-node-runtime = { workspace = true }
 grid-node-solana-rpc = { workspace = true }
