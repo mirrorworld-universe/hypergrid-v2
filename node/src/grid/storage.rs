@@ -40,4 +40,4 @@ impl<C: Cluster> GridStorage<C> {
     }
 }
 
-impl<C: Cluster> Storage<C> for GridStorage<C> {}
+// impl<C: Cluster> Storage<C> for GridStorage<C> {}
