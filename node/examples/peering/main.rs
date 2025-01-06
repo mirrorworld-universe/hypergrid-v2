@@ -6,7 +6,7 @@ use std::time::Duration;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    initialize_logger(2)?;
+    initialize_logger(0)?;
 
     info!("Building new network identity");
 
@@ -36,7 +36,9 @@ async fn main() -> Result<()> {
 
     loop {
         match swarm.select_next_some().await {
-            SwarmEvent::NewListenAddr { address, .. } => println!("Listening on {address:?}"),
+            SwarmEvent::NewListenAddr { address, .. } => {
+                println!("I just got DIALED! Listening on {address:?}")
+            }
             SwarmEvent::Behaviour(event) => println!("{event:?}"),
             _ => {}
         }
