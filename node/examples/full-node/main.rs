@@ -10,6 +10,10 @@ impl Node {
     pub fn new() -> Self {
         Self {}
     }
+
+    pub async fn run() -> Result<()> {
+        println!("Running...");
+    }
 }
 
 #[tokio::main]
@@ -17,6 +21,7 @@ async fn main() -> Result<()> {
     initialize_logger(2)?;
 
     let node = Node::new();
+    node.run().await?;
 
     Ok(())
 }
