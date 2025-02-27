@@ -49,9 +49,11 @@ pub mod network {
 // crate::node
 //------------------------------------------------------------
 pub mod node {
-    use std::marker::PhantomData;
+    use anyhow::Result;
+    use jsonrpsee::server::ServerBuilder;
+    use std::{marker::PhantomData, net::SocketAddr};
 
-    pub enum Node<C: super::network::Cluster, R: Runtime<C>, P: Routing<C>> {
+    pub enum Node<C: super::network::Cluster, R: Runtime<C>, P: Routing<C, R>> {
         Sequencer(Sequencer<C, R, P>),
     }
 
@@ -64,13 +66,13 @@ pub mod node {
     // - Runtime
     // - Storage
     //------------------------------------------------------------
-    pub struct Sequencer<C: super::network::Cluster, R: Runtime<C>, P: Routing<C>> {
+    pub struct Sequencer<C: super::network::Cluster, R: Runtime<C>, P: Routing<C, R>> {
         runtime: R,
         router: P,
         _cluster: PhantomData<C>,
     }
 
-    impl<C: super::network::Cluster, R: Runtime<C>, P: Routing<C>> Sequencer<C, R, P> {
+    impl<C: super::network::Cluster, R: Runtime<C>, P: Routing<C, R>> Sequencer<C, R, P> {
         pub fn new(runtime: R, router: P) -> Self {
             Self {
                 runtime,
@@ -88,5 +90,41 @@ pub mod node {
     //------------------------------------------------------------
     // Routing
     //------------------------------------------------------------
-    pub trait Routing<C: super::network::Cluster> {}
+    pub trait Routing<C: super::network::Cluster, R: Runtime<C>>: InboundRpcHttp<C, R> {}
+
+    #[async_trait::async_trait]
+    pub trait InboundRpcHttp<C: super::network::Cluster, R: Runtime<C>>:
+        Clone + super::solana::SolanaRpcServer
+    {
+        /// Enables HTTP RPC gateways.
+        async fn enable_listener(&self) -> Result<()> {
+            // Handle error in Node level
+            let server = ServerBuilder::default().build(self.rpc_url()).await?;
+            let server_handle = server.start(self.clone().into_rpc());
+            server_handle.stopped().await;
+            Ok(())
+        }
+
+        /// Returns full RPC URL
+        fn rpc_url(&self) -> SocketAddr;
+    }
+}
+
+pub mod solana {
+    use jsonrpsee::{core::RpcResult, proc_macros::rpc};
+    use solana_rpc_client_api::config::RpcSendTransactionConfig;
+
+    #[rpc(server)]
+    pub trait SolanaRpc {
+        // --------------------------
+        // Send / Simulate
+        // --------------------------
+
+        #[method(name = "sendTransaction")]
+        async fn send_transaction(
+            &self,
+            transaction: String,
+            config: Option<RpcSendTransactionConfig>,
+        ) -> RpcResult<String>;
+    }
 }
