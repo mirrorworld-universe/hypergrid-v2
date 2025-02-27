@@ -1,5 +1,6 @@
 [package]
 name = "grid"
+description = ""
 version = { workspace = true }
 authors = { workspace = true }
 repository = { workspace = true }
@@ -8,3 +9,5 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [dependencies]
+clap = { workspace = true }
+tokio = { workspace = true }

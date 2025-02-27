@@ -21,7 +21,7 @@ edition = "2021"
 anstyle = "1.0.10"
 anyhow = "1.0.93"
 async-trait = "0.1.83"
-clap = { version = "4.5.21", features = ["derive"] }
+clap = { version = "4.5.21", features = ["derive", "cargo"] }
 futures = "0.3.31"
 jsonrpsee = { version = "0.24.7", features = ["full"] }
 libp2p = { version = "0.54.1", features = ["ping", "tcp", "tls", "tokio", "yamux"] }
