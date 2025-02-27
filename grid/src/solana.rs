@@ -1,8 +1,38 @@
-use crate::core::{Cluster, Runtime};
+use crate::core::{Cluster, Routing, Runtime};
 use anyhow::Result;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
 use solana_rpc_client_api::config::RpcSendTransactionConfig;
 use std::{marker::PhantomData, net::SocketAddr};
+
+pub struct Solana<C: Cluster> {
+    rpc_http: SolanaInboundRpcHttp,
+    _cluster: PhantomData<C>,
+}
+
+impl<C: Cluster> Solana<C> {
+    pub fn new() -> Self {
+        Self {
+            _cluster: Default::default(),
+        }
+    }
+}
+
+#[async_trait::async_trait]
+impl<C: Cluster> Runtime<C> for Solana<C> {
+    async fn process_transaction(&self) -> Result<()> {
+        println!("processed");
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl<C: Cluster> Routing<C> for Solana<C> {
+    async fn enable_listeners(&self) -> Result<()> {
+        self.rpc_http.start_rpc_http().await?;
+        println!("enabling listeners");
+        Ok(())
+    }
+}
 
 #[derive(Clone, Debug)]
 pub struct SolanaInboundRpcHttp<C: Cluster, R: Runtime<C>> {

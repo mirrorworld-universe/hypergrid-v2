@@ -21,7 +21,7 @@ async fn main() {
 
     match app_m.subcommand() {
         Some(("start", start_m)) => {
-            // let node = Node::new
+            // let node = Node::new_sequencer(runtime, router);
             println!("{start_m:?}");
         }
 

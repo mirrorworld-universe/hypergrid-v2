@@ -12,11 +12,11 @@ impl Cluster for CanaryV0 {
     const NAME: &'static str = "canary-v0";
 }
 
-pub enum Node<C: Cluster, R: Runtime<C>, P: Routing<C, R>> {
+pub enum Node<C: Cluster, R: Runtime<C>, P: Routing<C>> {
     Sequencer(Sequencer<C, R, P>),
 }
 
-impl<C: Cluster, R: Runtime<C>, P: Routing<C, R>> Node<C, R, P> {
+impl<C: Cluster, R: Runtime<C>, P: Routing<C>> Node<C, R, P> {
     pub fn new_sequencer(runtime: R, router: P) -> Self {
         Self::Sequencer(Sequencer::new(runtime, router))
     }
@@ -31,13 +31,13 @@ impl<C: Cluster, R: Runtime<C>, P: Routing<C, R>> Node<C, R, P> {
 // - Runtime
 // - Storage
 //------------------------------------------------------------
-pub struct Sequencer<C: Cluster, R: Runtime<C>, P: Routing<C, R>> {
+pub struct Sequencer<C: Cluster, R: Runtime<C>, P: Routing<C>> {
     runtime: R,
     router: P,
     _cluster: PhantomData<C>,
 }
 
-impl<C: Cluster, R: Runtime<C>, P: Routing<C, R>> Sequencer<C, R, P> {
+impl<C: Cluster, R: Runtime<C>, P: Routing<C>> Sequencer<C, R, P> {
     pub fn new(runtime: R, router: P) -> Self {
         Self {
             runtime,
@@ -51,12 +51,15 @@ impl<C: Cluster, R: Runtime<C>, P: Routing<C, R>> Sequencer<C, R, P> {
 // Runtime
 //------------------------------------------------------------
 /// Note: jsonrpsee `#[rpc(server)]` requires Send + Sync + 'static
-pub trait Runtime<C: Cluster>: Clone + Send + Sync + 'static {}
+#[async_trait::async_trait]
+pub trait Runtime<C: Cluster>: Clone + Send + Sync + 'static {
+    async fn process_transaction(&self) -> Result<()>;
+}
 
 //------------------------------------------------------------
 // Routing
 //------------------------------------------------------------
 #[async_trait::async_trait]
-pub trait Routing<C: Cluster, R: Runtime<C>> {
-    async fn enable_listeners() -> Result<()>;
+pub trait Routing<C: Cluster> {
+    async fn enable_listeners(&self) -> Result<()>;
 }
