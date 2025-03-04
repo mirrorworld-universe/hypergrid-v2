@@ -2,31 +2,54 @@ use crate::core::{Cluster, Routing, Runtime};
 use anyhow::Result;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
 use solana_rpc_client_api::config::RpcSendTransactionConfig;
-use std::{marker::PhantomData, net::SocketAddr};
+use std::sync::Arc;
 
-pub struct Solana<C: Cluster> {
-    rpc_http: SolanaInboundRpcHttp,
-    _cluster: PhantomData<C>,
-}
+//------------------------------------------------------------
+// Runtime
+//------------------------------------------------------------
 
-impl<C: Cluster> Solana<C> {
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SolanaSvmRuntime;
+
+impl SolanaSvmRuntime {
     pub fn new() -> Self {
-        Self {
-            _cluster: Default::default(),
-        }
+        Self
     }
 }
 
 #[async_trait::async_trait]
-impl<C: Cluster> Runtime<C> for Solana<C> {
+impl Runtime for SolanaSvmRuntime {
     async fn process_transaction(&self) -> Result<()> {
         println!("processed");
         Ok(())
     }
 }
 
+//------------------------------------------------------------
+// Routing
+//------------------------------------------------------------
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SolanaSvmRoutingConfig {
+    rpc_url: &'static str,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SolanaSvmRouting<R: Runtime> {
+    rpc_http: SolanaInboundRpcHttp,
+    runtime: Arc<R>,
+}
+
+impl<R: Runtime> SolanaSvmRouting<R> {
+    pub fn new(config: SolanaSvmRoutingConfig, runtime: R) -> Self {
+        Self {
+            rpc_http: SolanaInboundRpcHttp::new(config.rpc_url),
+        }
+    }
+}
+
 #[async_trait::async_trait]
-impl<C: Cluster> Routing<C> for Solana<C> {
+impl Routing for SolanaSvmRouting {
     async fn enable_listeners(&self) -> Result<()> {
         self.rpc_http.start_rpc_http().await?;
         println!("enabling listeners");
@@ -34,34 +57,23 @@ impl<C: Cluster> Routing<C> for Solana<C> {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct SolanaInboundRpcHttp<C: Cluster, R: Runtime<C>> {
-    rpc_url: SocketAddr,
-    runtime: R,
-    _cluster: PhantomData<C>,
+//------------------------------------------------------------
+// Routing Layers
+//------------------------------------------------------------
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SolanaInboundRpcHttp {
+    rpc_url: &'static str,
 }
 
-impl<C: Cluster, R: Runtime<C>> SolanaInboundRpcHttp<C, R> {
-    pub fn new(rpc_url: SocketAddr, runtime: R) -> Self {
-        Self {
-            rpc_url,
-            runtime,
-            _cluster: Default::default(),
-        }
-    }
-
-    /// Enables HTTP RPC gateways.
-    async fn start_rpc_http(&self) -> Result<()> {
-        // Handle error in Node level
-        let server = ServerBuilder::default().build(self.rpc_url).await?;
-        let server_handle = server.start(self.clone().into_rpc());
-        server_handle.stopped().await;
-        Ok(())
+impl SolanaInboundRpcHttp {
+    pub fn new(rpc_url: &str) -> Self {
+        Self { rpc_url }
     }
 }
 
 #[async_trait::async_trait]
-impl<C: Cluster, R: Runtime<C>> SolanaRpcServer for SolanaInboundRpcHttp<C, R> {
+impl SolanaRpcServer for SolanaInboundRpcHttp {
     async fn send_transaction(
         &self,
         transaction: String,

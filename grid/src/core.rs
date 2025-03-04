@@ -1,24 +1,36 @@
 use anyhow::Result;
 use jsonrpsee::server::ServerBuilder;
-use std::{marker::PhantomData, net::SocketAddr};
+use std::{net::SocketAddr, sync::Arc};
 
-pub trait Cluster: Copy + Clone + Send + Sync + 'static {
-    const NAME: &'static str;
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ClusterConfig {
+    name: &'static str,
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-pub struct CanaryV0 {}
-impl Cluster for CanaryV0 {
-    const NAME: &'static str = "canary-v0";
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Cluster {
+    CanaryV0(ClusterConfig),
 }
 
-pub enum Node<C: Cluster, R: Runtime<C>, P: Routing<C>> {
-    Sequencer(Sequencer<C, R, P>),
+impl Cluster {
+    pub fn new_canary_v0(name: &str) -> Self {
+        Cluster::CanaryV0(ClusterConfig { name })
+    }
+
+    pub fn get_config(&self) -> &ClusterConfig {
+        match self {
+            Self::CanaryV0(c) => c,
+        }
+    }
 }
 
-impl<C: Cluster, R: Runtime<C>, P: Routing<C>> Node<C, R, P> {
+pub enum Node<R: Runtime, P: Routing> {
+    Sequencer(Arc<Sequencer<R, P>>),
+}
+
+impl<R: Runtime, P: Routing> Node<R, P> {
     pub fn new_sequencer(runtime: R, router: P) -> Self {
-        Self::Sequencer(Sequencer::new(runtime, router))
+        Self::Sequencer(Arc::new(Sequencer::new(runtime, router)))
     }
 }
 
@@ -27,24 +39,29 @@ impl<C: Cluster, R: Runtime<C>, P: Routing<C>> Node<C, R, P> {
 //
 // Layers:
 // - Routing
-// - Processor
+// - Ordering
 // - Runtime
 // - Storage
 //------------------------------------------------------------
-pub struct Sequencer<C: Cluster, R: Runtime<C>, P: Routing<C>> {
+pub struct Sequencer<R: Runtime, P: Routing> {
     runtime: R,
-    router: P,
-    _cluster: PhantomData<C>,
+    router: P<R>,
 }
 
-impl<C: Cluster, R: Runtime<C>, P: Routing<C>> Sequencer<C, R, P> {
+impl<R: Runtime, P: Routing> Sequencer<R, P> {
     pub fn new(runtime: R, router: P) -> Self {
-        Self {
-            runtime,
-            router,
-            _cluster: Default::default(),
-        }
+        Self { runtime, router }
     }
+}
+
+//------------------------------------------------------------
+// NodeScaffolding
+//------------------------------------------------------------
+#[async_trait::async_trait]
+pub trait NodeScaffolding {
+    async fn prepare(&self) -> Result<()>;
+    async fn start(&self) -> Result<()>;
+    async fn shutdown(&self) -> Result<()>;
 }
 
 //------------------------------------------------------------
@@ -52,7 +69,7 @@ impl<C: Cluster, R: Runtime<C>, P: Routing<C>> Sequencer<C, R, P> {
 //------------------------------------------------------------
 /// Note: jsonrpsee `#[rpc(server)]` requires Send + Sync + 'static
 #[async_trait::async_trait]
-pub trait Runtime<C: Cluster>: Clone + Send + Sync + 'static {
+pub trait Runtime: Clone + Send + Sync + 'static {
     async fn process_transaction(&self) -> Result<()>;
 }
 
@@ -60,6 +77,6 @@ pub trait Runtime<C: Cluster>: Clone + Send + Sync + 'static {
 // Routing
 //------------------------------------------------------------
 #[async_trait::async_trait]
-pub trait Routing<C: Cluster> {
+pub trait Routing {
     async fn enable_listeners(&self) -> Result<()>;
 }
