@@ -1,8 +1,15 @@
-use crate::core::{Cluster, Routing, Runtime};
+use crate::{
+    core::{Cluster, Routing, Runtime},
+    NodeScaffolding,
+};
 use anyhow::Result;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
 use solana_rpc_client_api::config::RpcSendTransactionConfig;
-use std::{ops::Deref, sync::Arc};
+use std::{
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+    ops::Deref,
+    sync::Arc,
+};
 
 pub enum Node {
     Grid(Arc<Grid>),
@@ -34,6 +41,18 @@ pub struct Grid {
 impl Grid {
     pub fn new(runtime: SolanaSvmRuntime, router: SolanaSvmRouting) -> Self {
         Self { runtime, router }
+    }
+}
+
+#[async_trait::async_trait]
+impl NodeScaffolding for Grid {
+    async fn start(&self) -> Result<()> {
+        self.router.enable_listeners().await?;
+        Ok(())
+    }
+
+    async fn shutdown(&self) -> Result<()> {
+        Ok(())
     }
 }
 
@@ -75,7 +94,19 @@ impl Runtime for InnerSolanaSvmRuntime {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SolanaSvmRoutingConfig {
-    pub rpc_url: &'static str,
+    pub rpc_http_url: IpAddr,
+    pub rpc_http_port: u16,
+}
+
+impl SolanaSvmRoutingConfig {
+    pub fn new(rpc_http_url: &'static str, rpc_http_port: u16) -> Self {
+        Self {
+            rpc_http_url: rpc_http_url
+                .parse()
+                .expect("rpc_http_url: invalid ip address"),
+            rpc_http_port,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -85,7 +116,7 @@ impl SolanaSvmRouting {
     pub fn new(config: SolanaSvmRoutingConfig, runtime: SolanaSvmRuntime) -> Self {
         Self(Arc::new(InnerSolanaSvmRouting {
             runtime,
-            rpc_http: SolanaInboundRpcHttp::new(config.rpc_url),
+            rpc_http: SolanaInboundRpcHttp::new(config.rpc_http_url, config.rpc_http_port),
         }))
     }
 }
@@ -119,12 +150,14 @@ impl Routing for InnerSolanaSvmRouting {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SolanaInboundRpcHttp {
-    rpc_url: &'static str,
+    rpc_url: SocketAddr,
 }
 
 impl SolanaInboundRpcHttp {
-    pub fn new(rpc_url: &'static str) -> Self {
-        Self { rpc_url }
+    pub fn new(url: IpAddr, port: u16) -> Self {
+        Self {
+            rpc_url: SocketAddr::new(url, port),
+        }
     }
 
     pub async fn start_rpc_http(&self) -> Result<()> {
