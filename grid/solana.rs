@@ -99,7 +99,7 @@ pub struct SolanaSvmRoutingConfig {
 }
 
 impl SolanaSvmRoutingConfig {
-    pub fn new(rpc_http_url: &'static str, rpc_http_port: u16) -> Self {
+    pub fn new(rpc_http_url: &str, rpc_http_port: u16) -> Self {
         Self {
             rpc_http_url: rpc_http_url
                 .parse()

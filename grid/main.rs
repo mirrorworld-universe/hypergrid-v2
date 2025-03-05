@@ -1,4 +1,5 @@
 pub mod core;
+pub mod error;
 pub mod solana;
 
 use anyhow::Result;
@@ -45,9 +46,28 @@ async fn main() -> Result<()> {
 
     match app_m.subcommand() {
         Some(("start", start_m)) => {
-            let router_config = SolanaSvmRoutingConfig::new("127.0.0.1", 8080);
-            if let Node::Grid(node) = Node::new_grid(router_config) {
-                node.start().await?;
+            let mode = start_m
+                .get_one::<NodeMode>("MODE")
+                .expect("MODE is required")
+                .clone();
+
+            let rpc_http_url = start_m
+                .get_one::<String>("RPC_HTTP_URL")
+                .expect("RPC_HTTP_URL is defaulted");
+            let rpc_http_port = start_m
+                .get_one::<u16>("RPC_HTTP_PORT")
+                .expect("RPC_HTTP_PORT is defaulted");
+            let router_config = SolanaSvmRoutingConfig::new(rpc_http_url, *rpc_http_port);
+
+            match mode {
+                NodeMode::Grid => {
+                    if let Node::Grid(node) = Node::new_grid(router_config) {
+                        node.start().await?;
+                    }
+                }
+                _ => {
+                    // Handled by clap `required(true)`.
+                }
             }
         }
 
