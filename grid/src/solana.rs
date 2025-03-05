@@ -2,25 +2,69 @@ use crate::core::{Cluster, Routing, Runtime};
 use anyhow::Result;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
 use solana_rpc_client_api::config::RpcSendTransactionConfig;
-use std::sync::Arc;
+use std::{ops::Deref, sync::Arc};
+
+pub enum Node {
+    Grid(Arc<Grid>),
+}
+
+impl Node {
+    pub fn new_grid(router_config: SolanaSvmRoutingConfig) -> Self {
+        let runtime = SolanaSvmRuntime::new();
+        let router = SolanaSvmRouting::new(router_config, runtime.clone());
+        Self::Grid(Arc::new(Grid::new(runtime, router)))
+    }
+}
+
+//------------------------------------------------------------
+// Node: Grid
+//
+// Layers:
+// - Routing
+// - Ordering
+// - Runtime
+// - Storage
+//
+//------------------------------------------------------------
+pub struct Grid {
+    runtime: SolanaSvmRuntime,
+    router: SolanaSvmRouting,
+}
+
+impl Grid {
+    pub fn new(runtime: SolanaSvmRuntime, router: SolanaSvmRouting) -> Self {
+        Self { runtime, router }
+    }
+}
 
 //------------------------------------------------------------
 // Runtime
 //------------------------------------------------------------
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SolanaSvmRuntime;
+pub struct SolanaSvmRuntime(Arc<InnerSolanaSvmRuntime>);
 
 impl SolanaSvmRuntime {
     pub fn new() -> Self {
-        Self
+        Self(Arc::new(InnerSolanaSvmRuntime {}))
     }
 }
 
+impl Deref for SolanaSvmRuntime {
+    type Target = Arc<InnerSolanaSvmRuntime>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct InnerSolanaSvmRuntime;
+
 #[async_trait::async_trait]
-impl Runtime for SolanaSvmRuntime {
+impl Runtime for InnerSolanaSvmRuntime {
     async fn process_transaction(&self) -> Result<()> {
-        println!("processed");
+        println!("Processing!");
         Ok(())
     }
 }
@@ -31,25 +75,37 @@ impl Runtime for SolanaSvmRuntime {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SolanaSvmRoutingConfig {
-    rpc_url: &'static str,
+    pub rpc_url: &'static str,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SolanaSvmRouting<R: Runtime> {
-    rpc_http: SolanaInboundRpcHttp,
-    runtime: Arc<R>,
-}
+pub struct SolanaSvmRouting(Arc<InnerSolanaSvmRouting>);
 
-impl<R: Runtime> SolanaSvmRouting<R> {
-    pub fn new(config: SolanaSvmRoutingConfig, runtime: R) -> Self {
-        Self {
+impl SolanaSvmRouting {
+    pub fn new(config: SolanaSvmRoutingConfig, runtime: SolanaSvmRuntime) -> Self {
+        Self(Arc::new(InnerSolanaSvmRouting {
+            runtime,
             rpc_http: SolanaInboundRpcHttp::new(config.rpc_url),
-        }
+        }))
     }
 }
 
+impl Deref for SolanaSvmRouting {
+    type Target = Arc<InnerSolanaSvmRouting>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct InnerSolanaSvmRouting {
+    runtime: SolanaSvmRuntime,
+    rpc_http: SolanaInboundRpcHttp,
+}
+
 #[async_trait::async_trait]
-impl Routing for SolanaSvmRouting {
+impl Routing for InnerSolanaSvmRouting {
     async fn enable_listeners(&self) -> Result<()> {
         self.rpc_http.start_rpc_http().await?;
         println!("enabling listeners");
@@ -67,8 +123,16 @@ pub struct SolanaInboundRpcHttp {
 }
 
 impl SolanaInboundRpcHttp {
-    pub fn new(rpc_url: &str) -> Self {
+    pub fn new(rpc_url: &'static str) -> Self {
         Self { rpc_url }
+    }
+
+    pub async fn start_rpc_http(&self) -> Result<()> {
+        // Handle error in Node level
+        let server = ServerBuilder::default().build(self.rpc_url).await?;
+        let server_handle = server.start(self.clone().into_rpc());
+        server_handle.stopped().await;
+        Ok(())
     }
 }
 

@@ -21,7 +21,10 @@ async fn main() {
 
     match app_m.subcommand() {
         Some(("start", start_m)) => {
-            // let node = Node::new_sequencer(runtime, router);
+            let router_config = SolanaSvmRoutingConfig {
+                rpc_url: "127.0.0.1",
+            };
+            let node = Node::new_grid(router_config);
             println!("{start_m:?}");
         }
 

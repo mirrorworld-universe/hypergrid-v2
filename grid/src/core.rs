@@ -13,7 +13,7 @@ pub enum Cluster {
 }
 
 impl Cluster {
-    pub fn new_canary_v0(name: &str) -> Self {
+    pub fn new_canary_v0(name: &'static str) -> Self {
         Cluster::CanaryV0(ClusterConfig { name })
     }
 
@@ -24,42 +24,11 @@ impl Cluster {
     }
 }
 
-pub enum Node<R: Runtime, P: Routing> {
-    Sequencer(Arc<Sequencer<R, P>>),
-}
-
-impl<R: Runtime, P: Routing> Node<R, P> {
-    pub fn new_sequencer(runtime: R, router: P) -> Self {
-        Self::Sequencer(Arc::new(Sequencer::new(runtime, router)))
-    }
-}
-
-//------------------------------------------------------------
-// Node: Sequencer
-//
-// Layers:
-// - Routing
-// - Ordering
-// - Runtime
-// - Storage
-//------------------------------------------------------------
-pub struct Sequencer<R: Runtime, P: Routing> {
-    runtime: R,
-    router: P<R>,
-}
-
-impl<R: Runtime, P: Routing> Sequencer<R, P> {
-    pub fn new(runtime: R, router: P) -> Self {
-        Self { runtime, router }
-    }
-}
-
 //------------------------------------------------------------
 // NodeScaffolding
 //------------------------------------------------------------
 #[async_trait::async_trait]
 pub trait NodeScaffolding {
-    async fn prepare(&self) -> Result<()>;
     async fn start(&self) -> Result<()>;
     async fn shutdown(&self) -> Result<()>;
 }
