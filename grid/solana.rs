@@ -1,7 +1,6 @@
 use crate::{
-    core::{Cluster, Routing, Runtime, Storage},
+    core::{Cluster, NodeScaffolding, Routing, Runtime, Storage},
     mock::MockStorage,
-    NodeScaffolding,
 };
 use anyhow::Result;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
