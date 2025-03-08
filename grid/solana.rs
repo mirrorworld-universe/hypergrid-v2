@@ -130,6 +130,10 @@ impl<R: Runtime, S: Storage> SolanaSvmRouting<R, S> {
     pub fn runtime(&self) -> &R {
         &self.runtime
     }
+
+    pub fn storage(&self) -> &S {
+        &self.storage
+    }
 }
 
 #[async_trait::async_trait]
