@@ -1,5 +1,6 @@
 pub mod core;
 pub mod error;
+pub mod mock;
 pub mod solana;
 
 use anyhow::Result;

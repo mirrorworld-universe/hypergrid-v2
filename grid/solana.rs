@@ -1,5 +1,6 @@
 use crate::{
-    core::{Cluster, Routing, Runtime},
+    core::{Cluster, Routing, Runtime, Storage},
+    mock::MockStorage,
     NodeScaffolding,
 };
 use anyhow::Result;
@@ -12,14 +13,15 @@ use std::{
 };
 
 pub enum Node {
-    Grid(Arc<Grid>),
+    Grid(Arc<Grid<SolanaSvmRuntime, MockStorage, SolanaSvmRouting<SolanaSvmRuntime, MockStorage>>>),
 }
 
 impl Node {
     pub fn new_grid(router_config: SolanaSvmRoutingConfig) -> Self {
         let runtime = SolanaSvmRuntime::new();
-        let router = SolanaSvmRouting::new(router_config, runtime.clone());
-        Self::Grid(Arc::new(Grid::new(runtime, router)))
+        let storage = MockStorage::new();
+        let router = SolanaSvmRouting::new(router_config, runtime.clone(), storage.clone());
+        Self::Grid(Arc::new(Grid::new(runtime, storage, router)))
     }
 }
 
@@ -33,19 +35,24 @@ impl Node {
 // - Storage
 //
 //------------------------------------------------------------
-pub struct Grid {
-    runtime: SolanaSvmRuntime,
-    router: SolanaSvmRouting,
+pub struct Grid<R: Runtime, S: Storage, P: Routing<R, S>> {
+    runtime: R,
+    storage: S,
+    router: P,
 }
 
-impl Grid {
-    pub fn new(runtime: SolanaSvmRuntime, router: SolanaSvmRouting) -> Self {
-        Self { runtime, router }
+impl<R: Runtime, S: Storage, P: Routing<R, S>> Grid<R, S, P> {
+    pub fn new(runtime: R, storage: S, router: P) -> Self {
+        Self {
+            runtime,
+            router,
+            storage,
+        }
     }
 }
 
 #[async_trait::async_trait]
-impl NodeScaffolding for Grid {
+impl<R: Runtime, S: Storage, P: Routing<R, S>> NodeScaffolding for Grid<R, S, P> {
     async fn start(&self) -> Result<()> {
         self.router.enable_listeners().await?;
         Ok(())
@@ -69,6 +76,14 @@ impl SolanaSvmRuntime {
     }
 }
 
+#[async_trait::async_trait]
+impl Runtime for SolanaSvmRuntime {
+    async fn process_transaction(&self) -> Result<()> {
+        println!("Processing!");
+        Ok(())
+    }
+}
+
 impl Deref for SolanaSvmRuntime {
     type Target = Arc<InnerSolanaSvmRuntime>;
 
@@ -79,14 +94,6 @@ impl Deref for SolanaSvmRuntime {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InnerSolanaSvmRuntime;
-
-#[async_trait::async_trait]
-impl Runtime for InnerSolanaSvmRuntime {
-    async fn process_transaction(&self) -> Result<()> {
-        println!("Processing!");
-        Ok(())
-    }
-}
 
 //------------------------------------------------------------
 // Routing
@@ -110,19 +117,33 @@ impl SolanaSvmRoutingConfig {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SolanaSvmRouting(Arc<InnerSolanaSvmRouting>);
+pub struct SolanaSvmRouting<R: Runtime, S: Storage>(Arc<InnerSolanaSvmRouting<R, S>>);
 
-impl SolanaSvmRouting {
-    pub fn new(config: SolanaSvmRoutingConfig, runtime: SolanaSvmRuntime) -> Self {
+impl<R: Runtime, S: Storage> SolanaSvmRouting<R, S> {
+    pub fn new(config: SolanaSvmRoutingConfig, runtime: R, storage: S) -> Self {
         Self(Arc::new(InnerSolanaSvmRouting {
             runtime,
+            storage,
             rpc_http: SolanaInboundRpcHttp::new(config.rpc_http_url, config.rpc_http_port),
         }))
     }
+
+    pub fn runtime(&self) -> &R {
+        &self.runtime
+    }
 }
 
-impl Deref for SolanaSvmRouting {
-    type Target = Arc<InnerSolanaSvmRouting>;
+#[async_trait::async_trait]
+impl<R: Runtime, S: Storage> Routing<R, S> for SolanaSvmRouting<R, S> {
+    async fn enable_listeners(&self) -> Result<()> {
+        self.rpc_http.start_rpc_http().await?;
+        println!("enabling listeners");
+        Ok(())
+    }
+}
+
+impl<R: Runtime, S: Storage> Deref for SolanaSvmRouting<R, S> {
+    type Target = Arc<InnerSolanaSvmRouting<R, S>>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -130,18 +151,10 @@ impl Deref for SolanaSvmRouting {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct InnerSolanaSvmRouting {
-    runtime: SolanaSvmRuntime,
+pub struct InnerSolanaSvmRouting<R: Runtime, S: Storage> {
+    runtime: R,
+    storage: S,
     rpc_http: SolanaInboundRpcHttp,
-}
-
-#[async_trait::async_trait]
-impl Routing for InnerSolanaSvmRouting {
-    async fn enable_listeners(&self) -> Result<()> {
-        self.rpc_http.start_rpc_http().await?;
-        println!("enabling listeners");
-        Ok(())
-    }
 }
 
 //------------------------------------------------------------

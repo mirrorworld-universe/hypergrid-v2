@@ -43,9 +43,20 @@ pub trait Runtime: Clone + Send + Sync + 'static {
 }
 
 //------------------------------------------------------------
+// Storage
+//------------------------------------------------------------
+#[async_trait::async_trait]
+pub trait Storage: Clone + Send + Sync {
+    type Key;
+    type Value;
+    async fn store_account(&mut self, key: Self::Key, value: Self::Value) -> Option<Self::Value>;
+    async fn get_account(&self, key: &Self::Key) -> Option<&Self::Value>;
+}
+
+//------------------------------------------------------------
 // Routing
 //------------------------------------------------------------
 #[async_trait::async_trait]
-pub trait Routing {
+pub trait Routing<R: Runtime, S: Storage>: Clone + Send + Sync {
     async fn enable_listeners(&self) -> Result<()>;
 }

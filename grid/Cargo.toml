@@ -26,3 +26,4 @@ solana-rpc-client-api = { workspace = true }
 solana-sdk = { workspace = true }
 solana-svm = { workspace = true }
 solana-transaction-status = { workspace = true }
+sqlx = "0.8.3"
