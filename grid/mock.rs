@@ -4,6 +4,7 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MockStorage {
     db: HashMap<String, u64>,
+    // db: HashMap<String, u64>,
 }
 
 impl MockStorage {
