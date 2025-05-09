@@ -1,6 +1,5 @@
 pub mod core;
 pub mod error;
-pub mod mock;
 pub mod solana;
 
 use anyhow::Result;
@@ -34,7 +33,7 @@ async fn main() -> Result<()> {
                 .arg(
                     Arg::new("RPC_HTTP_URL")
                         .long("rpc-http")
-                        .default_value("127.0.0.1"),
+                        .default_value("0.0.0.0"),
                 )
                 .arg(
                     Arg::new("RPC_HTTP_PORT")

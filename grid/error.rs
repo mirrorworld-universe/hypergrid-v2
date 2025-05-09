@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum NodeError {
+pub enum GridError {
     #[error("unknown error")]
     Unknown,
 }
