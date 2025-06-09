@@ -1,5 +1,5 @@
 [package]
-name = "hypergrid-grid"
+name = "hypergrid-ssn"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -9,7 +9,7 @@ license = { workspace = true }
 edition = { workspace = true }
 
 [lib]
-name = "hypergrid_grid"
+name = "hypergrid_ssn"
 path = "lib.rs"
 
 [dependencies]

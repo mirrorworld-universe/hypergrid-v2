@@ -1,7 +1,3 @@
-pub mod core;
-pub mod error;
-pub mod solana;
-
 use anyhow::Result;
 use clap::{crate_authors, crate_description, crate_name, crate_version, Arg, Command, ValueEnum};
 use core::*;

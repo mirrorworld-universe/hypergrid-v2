@@ -1,3 +1,5 @@
+pub mod error;
+
 use crate::{
     core::{Cluster, NodeScaffolding, Routing, Runtime, Storage},
     mock::MockStorage,

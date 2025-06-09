@@ -1,5 +1,5 @@
 [package]
-name = "hypergrid-grid"
+name = "hypergrid-cli"
 description = ""
 version = { workspace = true }
 authors = { workspace = true }
@@ -8,9 +8,9 @@ homepage = { workspace = true }
 license = { workspace = true }
 edition = { workspace = true }
 
-[lib]
-name = "hypergrid_grid"
-path = "lib.rs"
+[[bin]]
+name = "hgrid"
+path = "main.rs"
 
 [dependencies]
 anyhow = { workspace = true }
