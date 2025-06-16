@@ -1,12 +1,9 @@
+pub mod config;
+
 use anyhow::Result;
 use clap::{crate_authors, crate_description, crate_name, crate_version, Arg, Command, ValueEnum};
 use core::*;
 use solana::*;
-
-#[derive(Clone, Debug, Eq, PartialEq, ValueEnum)]
-pub enum NodeMode {
-    Grid,
-}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -16,8 +13,8 @@ async fn main() -> Result<()> {
         .about(crate_description!())
         .arg_required_else_help(true)
         .subcommand(
-            Command::new("start")
-                .about("Grid Starter")
+            Command::new("grid")
+                .about("Hypergrid Grid")
                 .arg_required_else_help(true)
                 .arg(
                     Arg::new("MODE")
@@ -41,12 +38,7 @@ async fn main() -> Result<()> {
         .get_matches();
 
     match app_m.subcommand() {
-        Some(("start", start_m)) => {
-            let mode = start_m
-                .get_one::<NodeMode>("MODE")
-                .expect("MODE is required")
-                .clone();
-
+        Some(("grid", start_m)) => {
             let rpc_http_url = start_m
                 .get_one::<String>("RPC_HTTP_URL")
                 .expect("RPC_HTTP_URL is defaulted");
@@ -55,15 +47,8 @@ async fn main() -> Result<()> {
                 .expect("RPC_HTTP_PORT is defaulted");
             let router_config = SolanaSvmRoutingConfig::new(rpc_http_url, *rpc_http_port);
 
-            match mode {
-                NodeMode::Grid => {
-                    if let Node::Grid(node) = Node::new_grid(router_config) {
-                        node.start().await?;
-                    }
-                }
-                _ => {
-                    // Handled by clap `required(true)`.
-                }
+            if let Node::Grid(node) = Node::new_grid(router_config) {
+                node.start().await?;
             }
         }
 
