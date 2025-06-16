@@ -1,7 +1,10 @@
 pub mod error;
 
 use error::GridError;
+use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
 use solana_account::AccountSharedData;
+use solana_rpc_client_api::config::{RpcSendTransactionConfig, RpcSimulateTransactionConfig};
+use solana_sdk::pubkey::Pubkey;
 use solana_svm::{
     account_loader::CheckedTransactionDetails,
     transaction_processing_callback::TransactionProcessingCallback,
@@ -24,7 +27,7 @@ impl GridAccountsDB {
     }
 
     fn read_account() -> Result<AccountSharedData, GridError> {
-        Ok(())
+        Ok(AccountSharedData::new(0, 0, &Pubkey::new_unique()))
     }
 }
 
@@ -37,7 +40,7 @@ pub struct Grid {
 impl Grid {
     fn with_config(config: GridConfig) -> Self {
         Self {
-            accounts: GridAccountsDBConfig,
+            accounts: GridAccountsDB::with_config(GridAccountsDBConfig {}),
         }
     }
 }
@@ -57,216 +60,164 @@ impl TransactionProcessingCallback for Grid {
     }
 }
 
-// use crate::{
-//     core::{Cluster, NodeScaffolding, Routing, Runtime, Storage},
-//     mock::MockStorage,
-// };
-// use anyhow::Result;
-// use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
-// use solana_rpc_client_api::config::RpcSendTransactionConfig;
-// use std::{
-//     net::{IpAddr, Ipv4Addr, SocketAddr},
-//     ops::Deref,
-//     sync::Arc,
-// };
-//
-// pub enum Node {
-//     Grid(Arc<Grid<SolanaSvmRuntime, MockStorage, SolanaSvmRouting<SolanaSvmRuntime, MockStorage>>>),
-// }
-//
-// impl Node {
-//     pub fn new_grid(router_config: SolanaSvmRoutingConfig) -> Self {
-//         let runtime = SolanaSvmRuntime::new();
-//         let storage = MockStorage::new();
-//         let router = SolanaSvmRouting::new(router_config, runtime.clone(), storage.clone());
-//         Self::Grid(Arc::new(Grid::new(runtime, storage, router)))
-//     }
-// }
-//
-// //------------------------------------------------------------
-// // Node: Grid
-// //
-// // Layers:
-// // - Routing
-// // - Ordering
-// // - Runtime
-// // - Storage
-// //
-// //------------------------------------------------------------
-// pub struct Grid<R: Runtime, S: Storage, P: Routing<R, S>> {
-//     runtime: R,
-//     storage: S,
-//     router: P,
-// }
-//
-// impl<R: Runtime, S: Storage, P: Routing<R, S>> Grid<R, S, P> {
-//     pub fn new(runtime: R, storage: S, router: P) -> Self {
-//         Self {
-//             runtime,
-//             router,
-//             storage,
-//         }
-//     }
-// }
-//
-// #[async_trait::async_trait]
-// impl<R: Runtime, S: Storage, P: Routing<R, S>> NodeScaffolding for Grid<R, S, P> {
-//     async fn start(&self) -> Result<()> {
-//         self.router.enable_listeners().await?;
-//         Ok(())
-//     }
-//
-//     async fn shutdown(&self) -> Result<()> {
-//         Ok(())
-//     }
-// }
-//
-// //------------------------------------------------------------
-// // Runtime
-// //------------------------------------------------------------
-//
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct SolanaSvmRuntime(Arc<InnerSolanaSvmRuntime>);
-//
-// impl SolanaSvmRuntime {
-//     pub fn new() -> Self {
-//         Self(Arc::new(InnerSolanaSvmRuntime {}))
-//     }
-// }
-//
-// #[async_trait::async_trait]
-// impl Runtime for SolanaSvmRuntime {
-//     async fn process_transaction(&self) -> Result<()> {
-//         println!("Processing!");
-//         Ok(())
-//     }
-// }
-//
-// impl Deref for SolanaSvmRuntime {
-//     type Target = Arc<InnerSolanaSvmRuntime>;
-//
-//     fn deref(&self) -> &Self::Target {
-//         &self.0
-//     }
-// }
-//
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct InnerSolanaSvmRuntime;
-//
-// //------------------------------------------------------------
-// // Routing
-// //------------------------------------------------------------
-//
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct SolanaSvmRoutingConfig {
-//     pub rpc_http_url: IpAddr,
-//     pub rpc_http_port: u16,
-// }
-//
-// impl SolanaSvmRoutingConfig {
-//     pub fn new(rpc_http_url: &str, rpc_http_port: u16) -> Self {
-//         Self {
-//             rpc_http_url: rpc_http_url
-//                 .parse()
-//                 .expect("rpc_http_url: invalid ip address"),
-//             rpc_http_port,
-//         }
-//     }
-// }
-//
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct SolanaSvmRouting<R: Runtime, S: Storage>(Arc<InnerSolanaSvmRouting<R, S>>);
-//
-// impl<R: Runtime, S: Storage> SolanaSvmRouting<R, S> {
-//     pub fn new(config: SolanaSvmRoutingConfig, runtime: R, storage: S) -> Self {
-//         Self(Arc::new(InnerSolanaSvmRouting {
-//             runtime,
-//             storage,
-//             rpc_http: SolanaInboundRpcHttp::new(config.rpc_http_url, config.rpc_http_port),
-//         }))
-//     }
-//
-//     pub fn runtime(&self) -> &R {
-//         &self.runtime
-//     }
-//
-//     pub fn storage(&self) -> &S {
-//         &self.storage
-//     }
-// }
-//
-// #[async_trait::async_trait]
-// impl<R: Runtime, S: Storage> Routing<R, S> for SolanaSvmRouting<R, S> {
-//     async fn enable_listeners(&self) -> Result<()> {
-//         self.rpc_http.start_rpc_http().await?;
-//         println!("enabling listeners");
-//         Ok(())
-//     }
-// }
-//
-// impl<R: Runtime, S: Storage> Deref for SolanaSvmRouting<R, S> {
-//     type Target = Arc<InnerSolanaSvmRouting<R, S>>;
-//
-//     fn deref(&self) -> &Self::Target {
-//         &self.0
-//     }
-// }
-//
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct InnerSolanaSvmRouting<R: Runtime, S: Storage> {
-//     runtime: R,
-//     storage: S,
-//     rpc_http: SolanaInboundRpcHttp,
-// }
-//
-// //------------------------------------------------------------
-// // Routing Layers
-// //------------------------------------------------------------
-//
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct SolanaInboundRpcHttp {
-//     rpc_url: SocketAddr,
-// }
-//
-// impl SolanaInboundRpcHttp {
-//     pub fn new(url: IpAddr, port: u16) -> Self {
-//         Self {
-//             rpc_url: SocketAddr::new(url, port),
-//         }
-//     }
-//
-//     pub async fn start_rpc_http(&self) -> Result<()> {
-//         // Handle error in Node level
-//         let server = ServerBuilder::default().build(self.rpc_url).await?;
-//         let server_handle = server.start(self.clone().into_rpc());
-//         server_handle.stopped().await;
-//         Ok(())
-//     }
-// }
-//
-// #[async_trait::async_trait]
-// impl SolanaRpcServer for SolanaInboundRpcHttp {
-//     async fn send_transaction(
-//         &self,
-//         transaction: String,
-//         config: Option<RpcSendTransactionConfig>,
-//     ) -> RpcResult<String> {
-//         let result = format!("{transaction} {config:?}");
-//         println!("{result}");
-//         Ok(result)
-//     }
-// }
-//
-// #[rpc(server)]
-// pub trait SolanaRpc {
-//     // --------------------------
-//     // Send / Simulate
-//     // --------------------------
-//
-//     #[method(name = "sendTransaction")]
-//     async fn send_transaction(
-//         &self,
-//         transaction: String,
-//         config: Option<RpcSendTransactionConfig>,
-//     ) -> RpcResult<String>;
-// }
+#[rpc(server)]
+pub trait SolanaRpc {
+    // --------------------------
+    // Send / Simulate
+    // --------------------------
+
+    #[method(name = "sendTransaction")]
+    async fn send_transaction(
+        &self,
+        transaction: String,
+        config: Option<RpcSendTransactionConfig>,
+    ) -> RpcResult<String>;
+
+    #[method(name = "simulateTransaction")]
+    async fn simulate_transaction(
+        &self,
+        transaction: String,
+        config: Option<RpcSimulateTransactionConfig>,
+    ) -> RpcResult<String>;
+
+    // // --------------------------
+    // // Archival
+    // // --------------------------
+    //
+    // #[method(name = "getBlock")]
+    // async fn get_block(&self, slot: u64) -> RpcResult<Option<UiConfirmedBlock>>;
+    //
+    // #[method(name = "getBlocks")]
+    // async fn get_blocks(
+    //     &self,
+    //     start_slot: Slot,
+    //     config: Option<RpcBlocksConfigWrapper>,
+    //     commitment: Option<CommitmentConfig>,
+    // ) -> RpcResult<Vec<Slot>>;
+    //
+    // #[method(name = "getSignaturesForAddress")]
+    // async fn get_signatures_for_address(
+    //     &self,
+    //     address: String,
+    //     config: Option<RpcSignaturesForAddressConfig>,
+    // ) -> RpcResult<Vec<RpcConfirmedTransactionStatusWithSignature>>;
+    //
+    // #[method(name = "getTransaction")]
+    // async fn get_transaction(
+    //     &self,
+    //     signature_str: String,
+    //     config: Option<RpcEncodingConfigWrapper<RpcTransactionConfig>>,
+    // ) -> Result<Option<EncodedConfirmedTransactionWithStatusMeta>>;
+    //
+    // // --------------------------
+    // // Cluster
+    // // --------------------------
+    //
+    // #[method(name = "getClusterNodes")]
+    // async fn get_cluster_nodes(&self) -> RpcResult<Vec<RpcContactInfo>>;
+    //
+    // // --------------------------
+    // // Validator
+    // // --------------------------
+    //
+    // #[method(name = "getSlot")]
+    // async fn get_slot(&self, config: Option<RpcContextConfig>) -> RpcResult<Slot>;
+    //
+    // #[method(name = "getBlockHeight")]
+    // async fn get_block_height(&self, config: Option<RpcContextConfig>) -> RpcResult<u64>;
+    //
+    // #[method(name = "getBlockTime")]
+    // async fn get_block_time(&self, block: u64) -> RpcResult<u64>;
+    //
+    // #[method(name = "getFirstAvailableBlock")]
+    // async fn get_first_available_block(&self) -> RpcResult<u64>;
+    //
+    // #[method(name = "getLatestBlockhash")]
+    // async fn get_latest_blockhash(
+    //     &self,
+    //     config: Option<RpcContextConfig>,
+    // ) -> RpcResult<RpcResponse<RpcBlockhash>>;
+    //
+    // #[method(name = "isBlockhashValid")]
+    // async fn is_blockhash_valid(
+    //     &self,
+    //     blockhash: String,
+    //     config: Option<IsBlockHashValidConfig>,
+    // ) -> RpcResult<RpcResponse<bool>>;
+    //
+    // #[method(name = "getBlockCommitment")]
+    // async fn get_block_commitment(
+    //     &self,
+    //     block: u64,
+    // ) -> Result<RpcBlockCommitment<BlockCommitmentArray>>;
+    //
+    // #[method(name = "getRecentPerformanceSamples")]
+    // async fn get_recent_performance_samples(
+    //     &self,
+    //     limit: Option<usize>,
+    // ) -> RpcResult<Vec<RpcPerfSample>>;
+    //
+    // #[method(name = "getSignatureStatuses")]
+    // async fn get_signature_statuses(
+    //     &self,
+    //     signature_strs: Vec<String>,
+    //     config: Option<RpcSignatureStatusConfig>,
+    // ) -> RpcResult<RpcResponse<Vec<Option<TransactionStatus>>>>;
+    //
+    // #[method(name = "getRecentPrioritizationFees")]
+    // async fn get_recent_prioritization_fees(
+    //     &self,
+    //     pubkey_strs: Vec<String>,
+    // ) -> RpcResult<Vec<RpcPrioritizationFee>>;
+    //
+    // #[method(name = "getEpochInfo")]
+    // async fn get_epoch_info(&self, config: Option<RpcContextConfig>) -> RpcResult<EpochInfo>;
+    //
+    // #[method(name = "getLeaderSchedule")]
+    // async fn get_leader_schedule(
+    //     &self,
+    //     slot: Option<u64>,
+    //     config: Option<RpcLeaderScheduleConfig>,
+    // ) -> RpcResult<Option<HashMap<String, Vec<usize>>>>;
+    //
+    // #[method(name = "getSlotLeaders")]
+    // async fn get_slot_leaders(&self, start_slot: u64, limit: u64) -> RpcResult<Vec<Pubkey>>;
+    //
+    // #[method(name = "getVoteAccounts")]
+    // async fn get_vote_accounts(
+    //     &self,
+    //     config: Option<RpcGetVoteAccountsConfig>,
+    // ) -> RpcResult<RpcVoteAccountStatus>;
+    //
+    // // --------------------------
+    // // Accounts
+    // // --------------------------
+    //
+    // #[method(name = "getAccountInfo")]
+    // async fn get_account_info(
+    //     &self,
+    //     pubkey_str: String,
+    //     config: Option<RpcAccountInfoConfig>,
+    // ) -> RpcResult<RpcResponse<Option<UiAccount>>>;
+    //
+    // #[method(name = "getMultipleAccounts")]
+    // async fn get_multiple_accounts(
+    //     &self,
+    //     pubkey_strs: Vec<String>,
+    //     config: Option<RpcAccountInfoConfig>,
+    // ) -> RpcResult<RpcResponse<Vec<Option<UiAccount>>>>;
+    //
+    // #[method(name = "getProgramAccounts")]
+    // async fn get_program_accounts(
+    //     &self,
+    //     program_id_str: String,
+    //     config: Option<RpcProgramAccountsConfig>,
+    // ) -> RpcResult<OptionalContext<Vec<RpcKeyedAccount>>>;
+    //
+    // #[method(name = "getBalance")]
+    // async fn get_balance(
+    //     &self,
+    //     pubkey_str: String,
+    //     config: Option<RpcContextConfig>,
+    // ) -> RpcResult<RpcResponse<u64>>;
+}
