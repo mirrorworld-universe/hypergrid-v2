@@ -1,0 +1,29 @@
+[package]
+name = "hypergrid-relay"
+description = ""
+version = { workspace = true }
+authors = { workspace = true }
+repository = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+edition = { workspace = true }
+
+[lib]
+name = "hypergrid_relay"
+path = "lib.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+clap = { workspace = true }
+jsonrpsee = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+
+solana-account-decoder = { workspace = true }
+solana-rpc-client-api = { workspace = true }
+solana-sdk = { workspace = true }
+solana-svm = { workspace = true }
+solana-transaction-status = { workspace = true }
+sqlx = { workspace = true }
