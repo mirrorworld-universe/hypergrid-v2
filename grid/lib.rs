@@ -2,6 +2,13 @@ pub mod error;
 
 use error::GridError;
 use solana_account::AccountSharedData;
+use solana_svm::{
+    account_loader::CheckedTransactionDetails,
+    transaction_processing_callback::TransactionProcessingCallback,
+    transaction_processor::{
+        TransactionBatchProcessor, TransactionProcessingConfig, TransactionProcessingEnvironment,
+    },
+};
 
 pub struct GridAccountsDBConfig {}
 
@@ -32,6 +39,21 @@ impl Grid {
         Self {
             accounts: GridAccountsDBConfig,
         }
+    }
+}
+
+impl TransactionProcessingCallback for Grid {
+    fn account_matches_owners(&self, account: &Pubkey, owners: &[Pubkey]) -> Option<usize> {
+        None
+    }
+
+    fn get_account_shared_data(&self, pubkey: &Pubkey) -> Option<AccountSharedData> {
+        None
+    }
+
+    // Optional: Handle built-in accounts if needed
+    fn add_builtin_account(&self, _name: &str, _program_id: &Pubkey) {
+        // Leave empty for now; implement if required
     }
 }
 
