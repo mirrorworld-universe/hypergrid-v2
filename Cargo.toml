@@ -4,7 +4,8 @@ members = [
 	"cli",
 	"core",
 	"grid",
-	"hssn"
+	"hssn",
+	"relay",
 ]
 
 exclude = [
@@ -29,12 +30,14 @@ futures = "0.3.31"
 jsonrpsee = { version = "0.24.7", features = ["full"] }
 libp2p = { version = "0.54.1", features = ["ping", "tcp", "tls", "tokio", "yamux"] }
 serde = "1.0.218"
+serde_json = "1.0.140"
 sqlx = "0.8.3"
 thiserror = "2.0.3"
 tokio = { version = "1.42.0", features = ["macros", "rt", "rt-multi-thread"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["std", "env-filter"] }
 
+solana-account = "2.2.1"
 solana-account-decoder = "2.1.4"
 solana-bpf-loader-program = "2.1.4"
 solana-client = "2.1.4"
@@ -49,4 +52,5 @@ solana-transaction-status = "2.1.4"
 hypergrid-cli = { version = "0.1.0", path = "cli" }
 hypergrid-core = { version = "0.1.0", path = "core" }
 hypergrid-grid = { version = "0.1.0", path = "grid" }
+hypergrid-relay = { version = "0.1.0", path = "relay" }
 hypergrid-ssn = { version = "0.1.0", path = "hssn" }
