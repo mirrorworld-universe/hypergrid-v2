@@ -2,9 +2,19 @@ pub mod error;
 
 use error::GridError;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc, server::ServerBuilder};
-use solana_account::AccountSharedData;
+use solana_program_runtime::{
+    loaded_programs::{BlockRelation, ForkGraph, ProgramCache, ProgramCacheEntry},
+    sysvar_cache::SysvarCache,
+};
 use solana_rpc_client_api::config::{RpcSendTransactionConfig, RpcSimulateTransactionConfig};
-use solana_sdk::pubkey::Pubkey;
+use solana_sdk::{
+    account::{AccountSharedData, ReadableAccount},
+    clock::{Clock, Slot, UnixTimestamp},
+    instruction::Instruction,
+    pubkey::Pubkey,
+    system_program,
+    transaction::{SanitizedTransaction, Transaction},
+};
 use solana_svm::{
     account_loader::CheckedTransactionDetails,
     transaction_processing_callback::TransactionProcessingCallback,
@@ -12,8 +22,11 @@ use solana_svm::{
         TransactionBatchProcessor, TransactionProcessingConfig, TransactionProcessingEnvironment,
     },
 };
+use std::collections::HashMap;
 
-pub struct GridAccountsDBConfig {}
+pub struct GridAccountsDBConfig {
+    state: HashMap<Pubkey>,
+}
 
 pub struct GridAccountsDB {}
 
@@ -26,8 +39,8 @@ impl GridAccountsDB {
         Ok(())
     }
 
-    fn read_account() -> Result<AccountSharedData, GridError> {
-        Ok(AccountSharedData::new(0, 0, &Pubkey::new_unique()))
+    fn read_account() -> Result<Option<AccountSharedData>, GridError> {
+        Ok(None)
     }
 }
 
@@ -39,6 +52,8 @@ pub struct Grid {
 
 impl Grid {
     fn with_config(config: GridConfig) -> Self {
+        // Initialize SVM API
+
         Self {
             accounts: GridAccountsDB::with_config(GridAccountsDBConfig {}),
         }
@@ -54,9 +69,28 @@ impl TransactionProcessingCallback for Grid {
         None
     }
 
-    // Optional: Handle built-in accounts if needed
+    // Optional: Handle built-in accounts if needed.
     fn add_builtin_account(&self, _name: &str, _program_id: &Pubkey) {
-        // Leave empty for now; implement if required
+        // Leave empty for now; implement if required.
+    }
+}
+
+#[async_trait::async_trait]
+impl SolanaRpcServer for Grid {
+    async fn send_transaction(
+        &self,
+        transaction: String,
+        config: Option<RpcSendTransactionConfig>,
+    ) -> RpcResult<String> {
+        Ok(String::new())
+    }
+
+    async fn simulate_transaction(
+        &self,
+        transaction: String,
+        config: Option<RpcSimulateTransactionConfig>,
+    ) -> RpcResult<String> {
+        Ok(String::new())
     }
 }
 
@@ -220,4 +254,15 @@ pub trait SolanaRpc {
     //     pubkey_str: String,
     //     config: Option<RpcContextConfig>,
     // ) -> RpcResult<RpcResponse<u64>>;
+}
+
+/// Disabling Fork Graph
+///
+/// Single sequencer (Grid) means no fork can occur
+pub struct DisabledForkGraph;
+
+impl ForkGraph for DisabledForkGraph {
+    fn relationship(&self, a: Slot, b: Slot) -> BlockRelation {
+        BlockRelation::Unknown
+    }
 }
