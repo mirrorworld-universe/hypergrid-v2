@@ -16,4 +16,10 @@ impl Hssn {
 pub trait HssnRpc {
     #[method(name = "getAttentionReport")]
     async fn get_attention_report(&self, epoch: u64) -> RpcResult<String>;
+
+    // #[method(name = "getRegistry")]
+    // async fn get_registry(&self) -> RpcResult<String>;
+    //
+    // #[method(name = "getRegistryInfo")]
+    // async fn get_registry_info(&self, epoch: u64) -> RpcResult<String>;
 }
