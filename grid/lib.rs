@@ -24,15 +24,17 @@ use solana_svm::{
 };
 use std::collections::HashMap;
 
-pub struct GridAccountsDBConfig {
-    state: HashMap<Pubkey>,
-}
+pub struct GridAccountsDBConfig {}
 
-pub struct GridAccountsDB {}
+pub struct GridAccountsDB {
+    state: HashMap<Pubkey, AccountSharedData>,
+}
 
 impl GridAccountsDB {
     fn with_config(config: GridAccountsDBConfig) -> Self {
-        Self {}
+        Self {
+            state: HashMap::new(),
+        }
     }
 
     fn write_account(account: AccountSharedData) -> Result<(), GridError> {
