@@ -4,4 +4,6 @@ use thiserror::Error;
 pub enum GridError {
     #[error("unknown error")]
     Unknown,
+    #[error("failed to write account {0}")]
+    AccountWriteFailed(String),
 }
