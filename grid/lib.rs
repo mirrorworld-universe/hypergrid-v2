@@ -37,12 +37,18 @@ impl GridAccountsDB {
         }
     }
 
-    fn write_account(account: AccountSharedData) -> Result<(), GridError> {
+    fn write_account(
+        &mut self,
+        pubkey: &Pubkey,
+        account: AccountSharedData,
+    ) -> Result<(), GridError> {
+        _ = self.state.insert(pubkey, account);
         Ok(())
     }
 
-    fn read_account() -> Result<Option<AccountSharedData>, GridError> {
-        Ok(None)
+    fn read_account(&self, pubkey: &Pubkey) -> Result<Option<AccountSharedData>, GridError> {
+        let account = self.state.get(pubkey);
+        Ok(account)
     }
 }
 
