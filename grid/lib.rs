@@ -70,23 +70,27 @@ impl Grid {
 
 impl TransactionProcessingCallback for Grid {
     fn account_matches_owners(&self, account: &Pubkey, owners: &[Pubkey]) -> Option<usize> {
-        if let Some(accounts_db) = self.accounts_db.read().ok() {
-            if let Some(data) = accounts_db.state.get(account) {
-                if data.lamports() == 0 {
-                    None
-                } else {
-                    owners.iter().position(|entry| data.owner() == entry)
-                }
-            } else {
-                None
-            }
-        } else {
+        let Some(accounts_db) = self.accounts_db.read().ok() else {
+            return None;
+        };
+
+        let Some(data) = accounts_db.state.get(account) else {
+            return None;
+        };
+
+        if data.lamports() == 0 {
             None
+        } else {
+            owners.iter().position(|entry| data.owner() == entry)
         }
     }
 
     fn get_account_shared_data(&self, pubkey: &Pubkey) -> Option<AccountSharedData> {
-        None
+        let Some(accounts_db) = self.accounts_db.read().ok() else {
+            return None;
+        };
+
+        accounts_db.state.get(pubkey).cloned()
     }
 
     // Optional: Handle built-in accounts if needed.
