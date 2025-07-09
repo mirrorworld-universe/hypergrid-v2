@@ -22,7 +22,7 @@ use solana_svm::{
         TransactionBatchProcessor, TransactionProcessingConfig, TransactionProcessingEnvironment,
     },
 };
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::RwLock};
 
 pub struct GridAccountsDBConfig {}
 
@@ -42,11 +42,11 @@ impl GridAccountsDB {
         pubkey: &Pubkey,
         account: AccountSharedData,
     ) -> Result<(), GridError> {
-        _ = self.state.insert(pubkey, account);
+        _ = self.state.insert(*pubkey, account);
         Ok(())
     }
 
-    fn read_account(&self, pubkey: &Pubkey) -> Result<Option<AccountSharedData>, GridError> {
+    fn read_account(&self, pubkey: &Pubkey) -> Result<Option<&AccountSharedData>, GridError> {
         let account = self.state.get(pubkey);
         Ok(account)
     }
@@ -55,7 +55,7 @@ impl GridAccountsDB {
 pub struct GridConfig {}
 
 pub struct Grid {
-    accounts: GridAccountsDB,
+    accounts_db: RwLock<GridAccountsDB>,
 }
 
 impl Grid {
@@ -63,14 +63,26 @@ impl Grid {
         // Initialize SVM API
 
         Self {
-            accounts: GridAccountsDB::with_config(GridAccountsDBConfig {}),
+            accounts_db: RwLock::new(GridAccountsDB::with_config(GridAccountsDBConfig {})),
         }
     }
 }
 
 impl TransactionProcessingCallback for Grid {
     fn account_matches_owners(&self, account: &Pubkey, owners: &[Pubkey]) -> Option<usize> {
-        None
+        if let Some(accounts_db) = self.accounts_db.read().ok() {
+            if let Some(data) = accounts_db.state.get(account) {
+                if data.lamports() == 0 {
+                    None
+                } else {
+                    owners.iter().position(|entry| data.owner() == entry)
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        }
     }
 
     fn get_account_shared_data(&self, pubkey: &Pubkey) -> Option<AccountSharedData> {
